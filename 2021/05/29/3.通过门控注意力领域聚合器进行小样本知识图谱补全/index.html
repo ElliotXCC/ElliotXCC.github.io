@@ -1,0 +1,676 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="这篇文章内容其实就是提出了门控注意力邻居聚合器来捕获小样本关系中最有价值的上下文语义，然后结合MAML机制和TransH进行FKGC的任务。只能说不算特别新颖，但也可以接受，希望早日放出代码QAQ">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>SIGIR2021:通过门控注意力邻域聚合器进行FKGC - Elliot&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"www.elliotx.cc","root":"/","version":"1.8.10","typing":{"enable":false,"typeSpeed":100,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"504dac09f9741c9c31be26083d1e5bd9","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"b1HLW0NIupw0Lhm5e1UXu3bX-gzGzoHsz","app_key":"zajFAfm7CySwr4eCAMCvngRD","server_url":"https://b1hlw0ni.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 50vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Elliot's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background_article.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.4)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="SIGIR2021:通过门控注意力邻域聚合器进行FKGC">
+              
+                SIGIR2021:通过门控注意力邻域聚合器进行FKGC
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-05-29 14:30" pubdate>
+        2021年5月29日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      33
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">SIGIR2021:通过门控注意力邻域聚合器进行FKGC</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：1 年前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <center style="font-size:30px">Relational Learning with Gated and Attentive Neighbor Aggregator for Few-Shot Knowledge Graph Completion</center>
+
+<center>SIGIR 2021</center>
+
+<h2 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h2><p><img src="./img/17.9.png" srcset="/img/loading.gif" lazyload style="width:50%"></p>
+<p>如图，红色线表示小样本关系（few-shot relation），绿色的边缘代表邻居关系。根据实例，本文提出了两个challenge：</p>
+<ol>
+<li>对于小样本关系<em>Pole Position</em>，头部实体只有一个邻居并且无法表示关系<em>Pole Position</em>。因此，稀疏的领域会带来噪声。从而无法表示小样本关系。（稀疏领域）</li>
+<li>小样本关系<em>Pole Position</em>是N-1的关系。由于特定于N-1关系的头部实体的不确定性，所以预测头部实体的结果不会特别准确。 （复杂关系）</li>
+</ol>
+<h2 id="贡献"><a href="#贡献" class="headerlink" title="贡献"></a>贡献</h2><ul>
+<li>提出了门控注意力邻居聚合器来捕获小样本关系中最有价值的上下文语义。</li>
+<li>首先将MAML和TransH结合起来进行小样本知识图谱补全，提出的模型也能同时考虑到1-N，N-1和N-N的复杂关系</li>
+<li>在设定的数据集上取得了良好的效果。</li>
+</ul>
+<h2 id="方法介绍"><a href="#方法介绍" class="headerlink" title="方法介绍"></a>方法介绍</h2><p><img src="./img/17.1.png" srcset="/img/loading.gif" lazyload style="width:80%"></p>
+<p>我们首先根据提出的两阶段表示学习机制学习支持集上三元组的小样本关系表示(few-shot relation representation)，然后通过查询集中的三元组优化整个模型。 </p>
+<h3 id="Global-Stage-General-Representation"><a href="#Global-Stage-General-Representation" class="headerlink" title="Global Stage: General Representation"></a>Global Stage: General Representation</h3><h4 id="Gated-and-Attentive-Neighbor-Aggregator"><a href="#Gated-and-Attentive-Neighbor-Aggregator" class="headerlink" title="Gated and Attentive Neighbor Aggregator"></a>Gated and Attentive Neighbor Aggregator</h4><p><img src="./img/17.2.png" srcset="/img/loading.gif" lazyload style="width:30%"></p>
+<p>这部分是受图注意力网络（GAT）的启发，用来捕获单个实体的不同邻居实体对其的影响，来提高实体编码的质量。对实体e的关系和邻居节点$(r_i,e_i)\in N_e$获取注意力值如下：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\mathbf{c}_{i} &=\mathbf{W}_{1}\left[\mathbf{r}_{i} ; \mathbf{e}_{i}\right] \\
+d_{i} &=\text { LeakyReLU} \left(\mathbf{U}_{1}^{\top} \mathbf{c}_{i}\right)
+\end{aligned}</script><p>$\mathbf{W}_{1}$是线性变换矩阵，$\mathbf{U}_{1}$是权重矩阵然后通过LeakyReLU激活函数获得不同邻居的注意力值。然后使用softmax函数将获取到的注意力值和每个邻居都联系起来：</p>
+<script type="math/tex; mode=display">
+\alpha_{i}=\operatorname{softmax}\left(d_{i}\right)=\frac{\exp \left(d_{i}\right)}{\sum\left(r_{i}, e_{i}\right) \in \mathcal{N}_{e} \exp \left(d_{i}\right)}</script><p>为了消除在表示小样本关系时，由于稀疏邻域导致的噪声邻居实体的影响，作者采用了门值g来自动确定激活实体e的邻居实体的程度（degree）：</p>
+<script type="math/tex; mode=display">
+g=\text { sigmoid }\left(\mathbf{U}_{2}^{\top} \sum_{\left(r_{i}, e_{i}\right) \in \mathcal{N}_{e}} \alpha_{i} \mathbf{c}_{i}+b_{g}\right)</script><p>基于门控机制，通过组合头部或尾部实体e的邻域表示及其实体嵌入来获得小样本关系r的一半邻域的表示（指代为h’或t’）：</p>
+<script type="math/tex; mode=display">
+\mathbf{e}^{\prime}=\sigma\left(\sum_{\left(r_{i}, e_{i}\right) \in N_{e}} g \alpha_{i} \mathbf{c}_{i}+(1-g) \mathbf{W}_{2} \mathbf{e}+\mathbf{b}\right)</script><p>$\mathbf{W}_2$表示权重矩阵，$\mathbf{b}$是偏置的矢量参数。 获得h’和t’之后，通过拼接操作获得领域表示s：$\mathbf{s}=\left[\mathbf{h}^{\prime} ; \mathbf{t}^{\prime}\right]$</p>
+<h4 id="Generating-the-Few-shot-Relation-Representation"><a href="#Generating-the-Few-shot-Relation-Representation" class="headerlink" title="Generating the Few-shot Relation Representation"></a>Generating the Few-shot Relation Representation</h4><blockquote>
+<p>MetaR通过仅对支持集中所有实体对的关系元取平均来表示小样本关系，而在表示一种小样本关系时忽略了支持集中所有实体对的不同影响。 </p>
+</blockquote>
+<p>本文引入了一种注意力机制的Bi-LSTM编码器，用于在支持集中集成一种小样本关系的多个邻域表示，可用于学习一种小样本关系的一般表示。</p>
+<p><img src="./img/17.3.png" srcset="/img/loading.gif" lazyload style="width:30%"></p>
+<p> 具体地，从等式导出邻域表示。依次将上个环节中的领域表示$\mathbf{s}_{i}^{K}$送入注意力机制的Bi-LSTM中，其中𝐾是支持集的大小。 双向Bi-LSTM的正向和反向隐状态的计算方式如下：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\overrightarrow{\mathbf{p}}_{i} &=\operatorname{LSTM}\left(W_{h 1} \overrightarrow{\mathbf{p}}_{i-1}+W_{s 1} \overrightarrow{\mathbf{s}}_{i}\right) \\
+\overleftarrow{\mathbf{p}}_{i} &=\operatorname{LSTM}\left(W_{h 2} \overleftarrow{\mathbf{p}}_{i-1}+W_{s 2} \overleftarrow{\mathbf{s}}_{i}\right)
+\end{aligned}</script><p>最终的隐状态可以通过两个方向隐状态拼接再做一个线性变换得到：</p>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\mathbf{p}_{i}=\left[\overrightarrow{\mathbf{p}}_{i} ; \overleftarrow{\mathbf{p}}_{i}\right] \\
+\mathbf{p}_{i}^{\prime}=\mathbf{W}_{3} \mathbf{p}_{i}
+\end{array}</script><p>然后再使用注意力机制计算各个隐状态的权重：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+o_{i} &=\tanh \left(\mathbf{U}_{3}^{\top} \mathbf{p}_{i}^{\prime}+b_{a}\right) \\
+\beta_{i} &=\operatorname{softmax}\left(o_{i}\right)=\frac{\exp \left(o_{i}\right)}{\sum_{i=1}^{K} \exp \left(o_{i}\right)}
+\end{aligned}</script><p>最后通过整合支持集中来自𝐾个三元组的所有邻域表示来表示小样本关系的一般表示r’。 得到Bi-LSTM的最后隐状态：</p>
+<script type="math/tex; mode=display">
+\mathbf{r}^{\prime}=\sum_{i=1}^{K} \beta_{i} \mathbf{p}_{i}^{\prime}</script><h3 id="Local-Stage-MTransH"><a href="#Local-Stage-MTransH" class="headerlink" title="Local Stage: MTransH"></a>Local Stage: MTransH</h3><p>本文旨在考虑1-N、N-1和N-N的复杂关系的同时，更新局部阶段小样本关系的表示。</p>
+<p><img src="./img/17.4.png" srcset="/img/loading.gif" lazyload style="width:50%"></p>
+<p>transH模型示意图如下：</p>
+<p><img src="./img/17.10.png" srcset="/img/loading.gif" lazyload style="width:30%"></p>
+<p>受典型的KGE模型TransH的启发，该模型可以建模复杂的关系，三元组$(h_i,r,t_i)$的分数函数定义为：</p>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\mathbf{h}_{p i}=\mathbf{h}_{i}-\mathbf{h}_{i} \mathbf{P}_{r} \mathbf{h}_{i}, \mathbf{t}_{p i}=\mathbf{t}_{i}-\mathbf{t}_{i} \mathbf{P}_{r} \mathbf{t}_{i} \\
+E\left(h_{i}, r, t_{i}\right)=\left\|\mathbf{h}_{p i}+\mathbf{r}^{\prime}-\mathbf{t}_{p i}\right\|_{L 1 / L 2}
+\end{array}</script><p>其中$h_i$和$t_i$是在预训练中学习到的头部和尾部嵌入。 $P_r$是关于𝑟的超平面的法向量。 r’是从等式推导的小样本关系的一般表示。这部分得到一个损失函数如下：</p>
+<script type="math/tex; mode=display">
+L\left(S_{r}\right)=\sum_{\left(h_{i}, r, t_{i}\right) \in S_{r}} \sum_{\left(h_{i}, r, t_{i}^{\prime}\right) \in S_{r}^{\prime}} \max \left[0, E\left(h_{i}, r_{i}, t_{i}\right)+\gamma-E\left(h_{i}, r_{i}, t_{i}^{\prime}\right)\right]</script><p>然后计算r’的梯度：</p>
+<script type="math/tex; mode=display">
+\operatorname{Grad}\left(r^{\prime}\right)=\frac{\mathrm{d} L\left(S_{r}\right)}{\mathrm{d} r^{\prime}}</script><p>然后通过学习率为$l$的随机梯度下降更新：</p>
+<script type="math/tex; mode=display">
+r_{m}=r^{\prime}-l_{r} G r a d\left(r^{\prime}\right)</script><p>通过模型无关元学习(model agnostic meta learning—MAML)方法能够学习每个小样本关系的超平面参数$P_r$。对于任务$T_r$上的超平面参数$P_r$，当适应新任务$T_{r’}$时，超平面参数变为$P’_{r}$。 在MAML之后，更新的参数是由当前任务$S_r$的支持集上的一个（或某些）梯度下降更新来计算的。 例如，参数$P_r$可以通过单个梯度步骤以学习速率𝑙进行更新，如下所示： </p>
+<script type="math/tex; mode=display">
+\mathbf{P}_{r}^{\prime}=\mathbf{P}_{r}^{*}-l_{p} \frac{\mathrm{d} L\left(S_{r}\right)}{\mathrm{d} \mathbf{P}_{r}}</script><p>当我们在当前任务上获得更新的关系表示和超平面参数时，会将它们传输到查询集(Query Set)中的实例。 </p>
+<p><img src="./img/17.5.png" srcset="/img/loading.gif" lazyload style="width:50%"></p>
+<p>采用和支持集上相同的方式，可以通过以下方式获得查询集的得分和损失： </p>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\mathbf{h}_{p j}=\mathbf{h}_{j}-\mathbf{h}_{j} \mathbf{P}_{r m} \mathbf{h}_{j}, \mathbf{t}_{p j}=\mathbf{t}_{j}-\mathbf{t}_{j} \mathbf{P}_{r m} \mathbf{t}_{j}\\
+E\left(h_{j}, r, t_{j}\right)=\left\|\mathbf{h}_{p j}+\mathbf{r}_{m}-\mathbf{t}_{p j}\right\|_{L 1 / L 2}\\
+L\left(Q_{r}\right)=\sum_{\left(h_{j}, r, t_{j}\right) \in Q_{r}} \sum_{\left(h_{j}, r, t_{j}^{\prime}\right) \in Q_{r}^{\prime}} \max \left[0, E(h, r, t)+\gamma\\-E\left(h, r, t^{\prime}\right)\right]
+\end{array}</script><p>此外，我们可以在任务𝑇的查询集上评估更新的超平面参数$P’_r$。 同时，初始化良好的超平面参数$P^*_r$可以计算如下： </p>
+<script type="math/tex; mode=display">
+\mathbf{P}_{r}^{*}=\mathbf{P}_{r}-l_{p} \frac{\mathrm{d} L\left(Q_{r}\right)}{\mathrm{d} \mathbf{P}_{r}^{\prime}}</script><h3 id="训练流程"><a href="#训练流程" class="headerlink" title="训练流程"></a>训练流程</h3><p><img src="./img/17.6.png" srcset="/img/loading.gif" lazyload style="width:50%"></p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><p><img src="./img/17.7.png" srcset="/img/loading.gif" lazyload style="width:60%"></p>
+<h3 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h3><p><img src="./img/17.8.png" srcset="/img/loading.gif" lazyload style="width:70%"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/">论文解读</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/%E5%B0%8F%E6%A0%B7%E6%9C%AC%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/">小样本知识图谱</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Few-Shot-Knowledge-Graph/">Few-Shot Knowledge Graph</a>
+                    
+                      <a class="hover-with-bg" href="/tags/KGC/">KGC</a>
+                    
+                      <a class="hover-with-bg" href="/tags/TransH/">TransH</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/07/05/4.%E9%80%9A%E8%BF%87%E5%9B%BE%E5%A4%96%E6%8E%A8%E7%BD%91%E7%BB%9C(GEN)%E6%9D%A5%E8%BF%9B%E8%A1%8C%E5%9B%BE%E5%A4%96%E9%93%BE%E8%B7%AF%E9%A2%84%E6%B5%8B/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">NeurlIPS2020:基于GEN来进行图外链路预测任务</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/05/27/2.%E5%A2%9E%E9%87%8F%E6%97%B6%E5%BA%8F%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E8%A1%A5%E5%85%A8%E6%A1%86%E6%9E%B6TIE/">
+                        <span class="hidden-mobile">SIGIR2021:增量时序知识图谱补全框架TIE</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: 'c29252f877c65bdf4782',
+          clientSecret: 'ae3f6dd67b1c019ce90d386cbd760073317e35c7',
+          repo: 'comment',
+          owner: 'ElliotXCC',
+          admin: ["ElliotXCC"],
+          id: '44838690e9dfc3bd968e59f6f0f2f25e',
+          language: 'zh-CN',
+          labels: ["gitalk"],
+          perPage: 10,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: true
+        });
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a target="_blank" rel="nofollow noopener"><span>Copyright</span></a> <i class="iconfont icon-github-fill"></i> <a href="https://github.com/ElliotXCC" target="_blank" rel="nofollow noopener"><span style="margin-right:25px">Elliot</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        辽ICP备2021005801号
+      </a>
+    </span>
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?504dac09f9741c9c31be26083d1e5bd9";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

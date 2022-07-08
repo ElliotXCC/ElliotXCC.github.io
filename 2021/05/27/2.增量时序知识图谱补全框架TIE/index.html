@@ -1,0 +1,716 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>SIGIR2021:增量时序知识图谱补全框架TIE - Elliot&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"www.elliotx.cc","root":"/","version":"1.8.10","typing":{"enable":false,"typeSpeed":100,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"504dac09f9741c9c31be26083d1e5bd9","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"b1HLW0NIupw0Lhm5e1UXu3bX-gzGzoHsz","app_key":"zajFAfm7CySwr4eCAMCvngRD","server_url":"https://b1hlw0ni.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 50vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Elliot's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background_article.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.4)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="SIGIR2021:增量时序知识图谱补全框架TIE">
+              
+                SIGIR2021:增量时序知识图谱补全框架TIE
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-05-27 00:20" pubdate>
+        2021年5月27日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      38
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">SIGIR2021:增量时序知识图谱补全框架TIE</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：1 年前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <center style="font-size:30px">TIE: A Framework for Embedding-based Incremental Temporal Knowledge Graph Completion</center>
+
+<center>SIGIR 2021</center>
+
+<h2 id="贡献"><a href="#贡献" class="headerlink" title="贡献"></a>贡献</h2><ol>
+<li>本文引入了一项新任务，即增量TKGC，并提出了TIE框架，这是一种将增量学习与TKGC集成在一起的训练和评估框架。</li>
+<li>提出了新的评估指标，分别是Deleted Facts Hits@10 (DF)和Reciprocal Rank Difference Measure (RRD)</li>
+<li>提出了TKG迭代训练中，使用新增的fact进行微调训练，有效的减少了训练的数据集大小，并且显著提高了训练速度。</li>
+</ol>
+<h2 id="TKGC任务设定"><a href="#TKGC任务设定" class="headerlink" title="TKGC任务设定"></a>TKGC任务设定</h2><p>在本文，作者分析对比了标准的TKGC任务和引入的增量TKGC任务的区别。主要体现在：</p>
+<ol>
+<li>输入的范围：在标准的TKGC任务的训练中，训练和评估都在时间步1到T中每步进行一次，在增量的TKGC任务中，每个时间步仅使用新增的数据进行训练和评估。</li>
+<li>用于评估模型的数据的时间步范围：在标准的TKGC任务的训练中，模型将$\{D^1,…,D^T\}$作为输入，并回答$\{D^1_{test},…,D^T_{test}\}$中的查询；增量的TKGC任务的训练中，模型将$\{D^1,…,D^t\}$作为输入，并回答$\{D^1_{test},…,D^t_{test}\}$中的查询。</li>
+<li>得分函数产生最终排名的候选实体集：标准TKGC是所有实体集（$E=\bigcup_{i=1}^{T} E^{i} $）；增量TKGC是已知的实体集（$E_{k n o w n}^{t}=\bigcup_{i=1}^t E^{i}$）</li>
+</ol>
+<h2 id="度量方式"><a href="#度量方式" class="headerlink" title="度量方式"></a>度量方式</h2><h3 id="标准TKGC的度量方式"><a href="#标准TKGC的度量方式" class="headerlink" title="标准TKGC的度量方式"></a>标准TKGC的度量方式</h3><p>一般使用Hit@k和Mean Reciprocal Rank (MRR)的方式来对标准TKGC的效果进行评估。其中Hit@10的公式定义如下：</p>
+<script type="math/tex; mode=display">
+\frac{1}{\left|D_{\text {test }}^{t}\right|} \sum_{(s, r, o, t) \in D_{\text {test }}^{t}} I(\operatorname{rank}(o \mid s, r, t) \leq 10)</script><h3 id="增量TKGC的度量方式"><a href="#增量TKGC的度量方式" class="headerlink" title="增量TKGC的度量方式"></a>增量TKGC的度量方式</h3><p>既然我们已经知道增量TKGC的目的就是从过去的时间步骤中去吸收知识，所以一个增量学习的方法应该基于他在当前和历史两个不同时间段的四元组预测的表现来评估。</p>
+<p>Current and Historical Average Measure（当前和历史平均度量）其实就是用当前的模型，用当前和历史的$D_{test}$去评估模型，求平均值。</p>
+<p>Intransigence Measure（顽固性度量）度量算法无法识别在历史阶段是成立，但是在当前阶段却是不成立的事实。比如一个学生从学校毕业了，那么他就不再和这个学校有联系了。</p>
+<p>将顽固性度量具体化到模型的能力中可以分为以下两个方面：</p>
+<ol>
+<li>为已删除的事实分配低RANK</li>
+<li>将当前有效的事实排在已删除的事实之上</li>
+</ol>
+<p>根据以上两个特性，本文提出了Deleted Facts Hits@10 (DF 删除事实Hit@10)和Reciprocal Rank Difference (RRD 相互排名差异) </p>
+<script type="math/tex; mode=display">
+\mathrm{DF}_{t} \triangleq \frac{1}{Z_{t}} \sum_{(s, r, o, t) \in D_{t e s t}^{t}} \sum_{o^{\prime} \in O_{s, r, t}^{\prime}} I\left(\operatorname{rank}\left(o^{\prime} \mid s, r, t\right) \leq k\right)\\
+\mathrm{RRD}_{t} \triangleq \frac{100}{Z_{t}} \sum_{(s, r, o, t) \in D_{t e s t}^{t}} \sum_{o^{\prime} \in O_{s, r, t}^{\prime}}\left(\frac{1}{\operatorname{rank}(o \mid s, r, t)}-\frac{1}{\operatorname{rank}\left(o^{\prime} \mid s, r, t\right)}\right)</script><p>$O_{s, r, t}^{\prime}$是负对象negative objects，$Z_t$是归一化常数：</p>
+<script type="math/tex; mode=display">
+\begin{array}{c}
+O_{s, r, t}^{\prime}=\left\{o^{\prime} \mid \exists t^{\prime} \in\left\{t-\tau_{d} \ldots t-1\right\}, \exists o^{\prime} \in E_{k n o w n}^{t^{\prime}},\left(s, r, o^{\prime}, t^{\prime}\right) \in D^{t^{\prime}}\right\}, \\
+Z_{t}=\sum_{(s, r, o, t) \in D_{t e s t}^{t}}\left|O_{s, r, t}^{\prime}\right|
+\end{array}</script><h2 id="TIE框架"><a href="#TIE框架" class="headerlink" title="TIE框架"></a>TIE框架</h2><p><img src='./img/16.1.png'></p>
+<p>一句话概括：使用增量学习方法，用来解决模型顽固性和历史知识过遗忘的缺点的高效的编码-解码结构的TKGC框架。其中，该框架使用Experience Replay经验重播和Temporal Regularization时间正则化技术来解决使用TKG表示学习模型来微调的方法的过度遗忘特性。除此之外，本文也提出了使用已删除的事实作为负训练的样本来解决模型顽固性的问题。最后，本文作者建议每个时间步时仅使用新添加的事实进行微调，因为TKG中模型最感兴趣的事实主要由持久性的事实组成，即只要事实的平均变化时间通常足够长，以至于相邻时间步长之间这个事实也不会产生剧烈的变化。</p>
+<h3 id="Experience-Replay"><a href="#Experience-Replay" class="headerlink" title="Experience Replay"></a>Experience Replay</h3><p>经验重播需要定义一个滑动窗口作为缓冲区$B^t$，包含历史的k个时间段的TKG数据，用这个k个时间段和当前TKG上的全部四元组来训练模型。</p>
+<h4 id="Replay-Fact-Sampling重播事实采样"><a href="#Replay-Fact-Sampling重播事实采样" class="headerlink" title="Replay Fact Sampling重播事实采样"></a>Replay Fact Sampling重播事实采样</h4><p>选择下列两种方案，从$B^t$中提取正样本$P^t$。</p>
+<ol>
+<li><p>Uniform Sampling 统一采样三元组</p>
+</li>
+<li><p>Frequency-based Sampling 基于历史模式频率HPF和当前模式频率CPF来采样。需要去匹配的模式Pattern定义如下：（其中*可以代表任意实体）</p>
+</li>
+</ol>
+<script type="math/tex; mode=display">
+P=\{(s, r, o),(s, *, o),(s, r, *),(*, r, o),(s, *, o),(s, *, *),(*, *, o)\} .</script><p>举例，如果要求模式$(s,*,o)$的HPF和CPF，如下：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+h_{s, *, o}^{t}=&\left|\left\{\left(s, r^{\prime}, o, t^{\prime}\right) \mid \exists r^{\prime}, t^{\prime},\left(s, r^{\prime}, o, t^{\prime}\right) \in B^{t}\right\}\right| \\
+c_{s, *, o}^{t} &=\left|\left\{\left(s, r^{\prime}, o, t\right) \mid \exists r^{\prime},\left(s, r^{\prime}, o, t\right) \in D^{t}\right\}\right|
+\end{aligned}</script><p>B中每个四元组的采样概率设计两个概念：频率相关概率$fp(s,r,o)$和时间相关概率$tp(t’)$，本文定义如下：</p>
+<script type="math/tex; mode=display">
+f p(s, r, o)=\sum_{p \in P} \lambda_{p}\left[\log \left(h_{p}^{t}+1\right)+\gamma \tau \log \left(c_{p}^{t}+1\right)\right]</script><p>标量值𝜆表示与模式𝑝的频率相关的权重。𝜏是窗口的长度。另外引入𝛾作为控制$h^t_{p}$和$c^t_{p}$比重的参数。采用对数形式的频率计算公式主要是用来缩小具有特别大频率的模式的比例，以避免在同一种模式下重复采样过多的四元组。</p>
+<p>$tp(t’)$代表距离当前时间步长t不同时间的指数衰减函数，用</p>
+<script type="math/tex; mode=display">
+t p\left(t^{\prime}\right)=\exp \left(\frac{t’-t}{\sigma}\right),</script><p>来表示，其中$\sigma$是控制函数平滑度的标量。最后更具这两个概率结合得到的非归一化采样率$s(s,r,o,t’)$就等于$fp(s,r,o)tp(t’)$。</p>
+<p>使用这种方式虽然可以对具有更高模式频率的四元组进行采样，但是在某些情况下，某些代表性高的四元组却有可能会因为匹配的模式低而没有被采样。这时候作者又提出了一种逆模式采样的方案，来鼓励采样较低模式频率的四元组:</p>
+<script type="math/tex; mode=display">
+\frac{t p\left(t^{\prime}\right)}{f p(s, r, o)}</script><p>在计算完所有四元组的采样率之后，我们将每个四元组的采样概率归一化，并使用它们采样获得$P^t$。</p>
+<p><img src='./img/16.2.png' style='width:60%'></p>
+<h3 id="Representation-Learning表示学习"><a href="#Representation-Learning表示学习" class="headerlink" title="Representation Learning表示学习"></a>Representation Learning表示学习</h3><p>通过下列方式，在$P^t$中使用依赖于时间的负采样策略收集负实体集（negative entities set）：</p>
+<script type="math/tex; mode=display">
+D_{s, r, t^{\prime}}^{-}=\left\{o^{\prime} \mid o^{\prime} \in E_{k n o w n^{\prime}}^{t^{\prime}}\left(s, r, o^{\prime}, t^{\prime}\right) \notin D^{t^{\prime}}\right\}</script><p>本文还使用了知识蒸馏损失来确保在新的当前学习步骤中不会丢失先前学习到的判别信息。在学习t时间的参数之前，模型存储前t-1个时间步的输出网络的参数如下：</p>
+<script type="math/tex; mode=display">
+q_{s, r, o, t^{\prime}}^{t-1}=\frac{\exp \left(\phi^{t-1}\left(s, r, o, t^{\prime}\right)\right)}{\sum_{o^{\prime} \in D_{s, r, t^{\prime}}^{-}} \exp \left(\phi^{t-1}\left(s, r, o^{\prime}, t^{\prime}\right)\right)}</script><p>其中$\phi^{t}$代表的是在时间t的时候模型和它当时的参数。</p>
+<script type="math/tex; mode=display">
+q_{s, r, o, t^{\prime}}^{t}=\frac{\exp \left(\phi^{t}\left(s, r, o, t^{\prime}\right)\right)}{\sum_{o^{\prime} \in D_{s, r, t^{\prime}}^{-}} \exp \left(\phi^{t}\left(s, r, o^{\prime}, t^{\prime}\right)\right)}</script><p>每次迭代replay knowledge distillation （重播知识蒸馏RKD）的损失和重播交叉熵（RCE）损失定义如下：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+L_{R K D} &=\sum_{s, r, o, t^{\prime} \in P t} D_{K L}\left(q_{s, r, o, t^{\prime}}^{t-1} \| q_{s, r, o, t^{\prime}}^{t}\right) \\
+&=\sum_{s, r, o, t^{\prime} \in P^{t}} q_{s, r, o, t^{\prime}}^{t-1} \log \left(\frac{q_{s, r, o, t^{\prime}}^{t-1}}{q_{s, r, o, t^{\prime}}^{t}}\right) \\
+L_{R C E} &=-\sum_{s, r, o, t^{\prime} \in P t} \log \left(q_{s, r, o, t^{\prime}}^{t}\right)
+\end{aligned}</script><h3 id="Temporal-Regularization-时间正则化"><a href="#Temporal-Regularization-时间正则化" class="headerlink" title="Temporal Regularization 时间正则化"></a>Temporal Regularization 时间正则化</h3><p>$\theta^{t-1}$表示在时间t-1之后训练的模型参数，$\theta^{t-1}=\{E^{t-1},R^{t-1},W^{t-1},B^{t-1}\}$,其中𝑾和𝑩是编码过程中的权重和偏差参数的矩阵。举例，使用Diachronic Embedding (DE)作为本文的Encoder时，定义如下：</p>
+<script type="math/tex; mode=display">
+z_{i}^{t}[n]=\left\{\begin{array}{ll}
+z_{i}[n] \sigma\left(w_{i}[n] t+b_{i}[n]\right) & \text { if } 1 \leq n \leq \gamma d \\
+z_{i}[n] & \text { if } \gamma d<n \leq d
+\end{array}\right.</script><p>$z_{i}$代表的是实体编码，维度是$|E|\times d$，前$\gamma d$个元素捕获时序、动态的信息，后$1-\gamma$个元素捕获静态的信息。</p>
+<p>在时间步𝑡训练之前，我们使用$\theta^{t-1}$来初始化$\theta^t$，其中，实体的编码初始化如下：</p>
+<script type="math/tex; mode=display">
+E_{i}^{t}=\left\{\begin{array}{ll}
+E_{i}^{t-1}, & \text { if } i \in E_{k n o w n}^{t-1} \\
+\text { uniform }\left(-\sqrt{\frac{12}{d}}, \sqrt{\frac{12}{d}}\right), & \text { otherwise. }
+\end{array}\right.</script><p>作者提出了对参数空间进行时间正则化以减轻TKG表示学习中的严重遗忘问题（catastrophic forgetting）：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+L_{T R}=\left\|\hat{\boldsymbol{E}}^{t}-\boldsymbol{E}^{t-1}\right\|_{2}+\left\|\hat{\boldsymbol{W}}^{t}-\boldsymbol{W}^{t-1}\right\|_{2}
+&+\left\|\hat{\boldsymbol{B}}^{t}-\boldsymbol{B}^{t-1}\right\|_{2}+\left\|\hat{\boldsymbol{R}}^{t}-\boldsymbol{R}^{t-1}\right\|_{2} .
+\end{aligned}</script><p>其中$\hat{\boldsymbol{E}}^{t}=\boldsymbol{E}^{t}\left[E_{k n o w n}^{t-1}\right]$。</p>
+<h3 id="Learning-With-Deleted-Facts"><a href="#Learning-With-Deleted-Facts" class="headerlink" title="Learning With Deleted Facts"></a>Learning With Deleted Facts</h3><p>为了减轻模型的顽固性问题，作者提出可以使用时序变化中被删除的四元组来训练模型：</p>
+<script type="math/tex; mode=display">
+N^{t}=\left\{(s, r, o, t) \mid(s, r, o, t) \notin D^{t} \wedge \exists t^{\prime},\left(s, r, o, t^{\prime}\right) \in B^{t}\right\}</script><p>我们将$N^t$中的每个四元组与一个负标签相关联，并计算二进制交叉熵损失为： </p>
+<script type="math/tex; mode=display">
+L_{d e l}=-\sum_{(s, r, o, t) \in N^{t}} \log (1-\sigma(\phi(s, r, o, t)))</script><h3 id="Learning-With-Added-Facts"><a href="#Learning-With-Added-Facts" class="headerlink" title="Learning With Added Facts"></a>Learning With Added Facts</h3><p><img src='./img/16.4.png' style='width:60%'></p>
+<p>我们通过Wikidata12k和YAGP11k的统计数据观察到，除了时间属性外，大多数事实在时间步长t-1和t之间是共同的。 这表明使用𝐷内的所有四元组进行微调实质上只是重新强调了该模型先前已知道的大多数事实。 </p>
+<p>作者提出了一种新策略，就是仅用添加的事实来进行微调训练，这样做可以减小训练数据的大小，从而将训练速度提高几个数量级：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+D_{a d d}^{t} &=\left\{(s, r, o, t) \mid(s, r, o, t) \in D^{t} \wedge(s, r, o, t-1) \notin D^{t-1}\right\}, \\
+L_{C E} &=-\sum_{(s, r, o, t) \in D_{a d d}^{t}} \log \left(q_{s, r, o, t}^{t}\right)
+\end{aligned}</script><h3 id="Optimization"><a href="#Optimization" class="headerlink" title="Optimization"></a>Optimization</h3><p>最后TIE的损失函数被定义为前面几个阶段损失函数的加权和：</p>
+<script type="math/tex; mode=display">
+L=\alpha_{1} L_{C E}+\alpha_{2} L_{d e l}+\alpha_{3} L_{R C E}+\alpha_{4} L_{R K D}+\alpha_{5} L_{T R}</script><p><img src='./img/16.3.png' style='width:60%'></p>
+<p><img src='./img/16.1.png'></p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h3 id="数据集分析"><a href="#数据集分析" class="headerlink" title="数据集分析"></a>数据集分析</h3><p><img src='./img/16.5.png' style='width:60%'></p>
+<h3 id="实验设定"><a href="#实验设定" class="headerlink" title="实验设定"></a>实验设定</h3><p><img src='./img/16.6.png' style='width:60%'></p>
+<p>使用前70%个时间步的数据进行标准的TKGC任务和评估，最后30%的时间步上使用增量的TKGC训练和评估方式完成实验。</p>
+<h3 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h3><p><img src='./img/16.7.png' style='width:100%'></p>
+<p>其中</p>
+<ol>
+<li>C@10, or C-Hits@10 (↑): Current Hits@10</li>
+<li>DF@10, or DF-Hits@10 (↓) : Deleted Facts Hits@10.</li>
+<li>RRD (↑) : Reciprocal Rank Difference.</li>
+<li>A@10, or A-Hits@10 (↑) : Average Hits@10.</li>
+</ol>
+<p>比较的不同实验设置：</p>
+<ol>
+<li>Fine-tune (FT)：一个基本的baseline加上仅使用新增的数据进行微调训练。</li>
+<li>Temporal Regularization (TR)：在FT的基础上加上了时间正则化损失进行训练。</li>
+<li>The proposed complete model (TIE)：完整的TIE框架。</li>
+<li>Full-batch (FB): 在这个实验中，使用$B^t$和$D^t$中的所有四元组进行微调模型。</li>
+<li>Full-batch with future data (FB_future):这个实验中，使用$\{D^1,…,D^T\}$的所有数据，即standard TKGC</li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/">论文解读</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/%E6%97%B6%E5%BA%8F%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/">时序知识图谱</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/KGC/">KGC</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Temporal-Knowledge-Graph/">Temporal Knowledge Graph</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Incremental-Learning/">Incremental Learning</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/05/29/3.%E9%80%9A%E8%BF%87%E9%97%A8%E6%8E%A7%E6%B3%A8%E6%84%8F%E5%8A%9B%E9%A2%86%E5%9F%9F%E8%81%9A%E5%90%88%E5%99%A8%E8%BF%9B%E8%A1%8C%E5%B0%8F%E6%A0%B7%E6%9C%AC%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E8%A1%A5%E5%85%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SIGIR2021:通过门控注意力邻域聚合器进行FKGC</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/05/09/1.Meta-Relation-Learning%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/">
+                        <span class="hidden-mobile">MetaR:通过元学习进行知识图谱小样本链路预测</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: 'c29252f877c65bdf4782',
+          clientSecret: 'ae3f6dd67b1c019ce90d386cbd760073317e35c7',
+          repo: 'comment',
+          owner: 'ElliotXCC',
+          admin: ["ElliotXCC"],
+          id: 'd74d4e925f4da8950440989cabd98358',
+          language: 'zh-CN',
+          labels: ["gitalk"],
+          perPage: 10,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: true
+        });
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a target="_blank" rel="nofollow noopener"><span>Copyright</span></a> <i class="iconfont icon-github-fill"></i> <a href="https://github.com/ElliotXCC" target="_blank" rel="nofollow noopener"><span style="margin-right:25px">Elliot</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        辽ICP备2021005801号
+      </a>
+    </span>
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?504dac09f9741c9c31be26083d1e5bd9";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

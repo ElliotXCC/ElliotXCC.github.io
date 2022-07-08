@@ -1,0 +1,649 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>MetaR:通过元学习进行知识图谱小样本链路预测 - Elliot&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"www.elliotx.cc","root":"/","version":"1.8.10","typing":{"enable":false,"typeSpeed":100,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"504dac09f9741c9c31be26083d1e5bd9","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"b1HLW0NIupw0Lhm5e1UXu3bX-gzGzoHsz","app_key":"zajFAfm7CySwr4eCAMCvngRD","server_url":"https://b1hlw0ni.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 50vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Elliot's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background_article.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.4)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="MetaR:通过元学习进行知识图谱小样本链路预测">
+              
+                MetaR:通过元学习进行知识图谱小样本链路预测
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-05-09 16:58" pubdate>
+        2021年5月9日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      29
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">MetaR:通过元学习进行知识图谱小样本链路预测</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：1 年前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <center style="font-size:30px">Meta Relational Learning for Few-Shot Link Prediction in Knowledge Graphs</center>
+
+<h2 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h2><p>当前很多知识图谱是不完整的——缺少三元组(h,r,t)的形式，本文针对用来补全知识图谱的小样本链路预测任务，其主要作用是根据已有的三元组预测新的三元组。在目前的知识图谱中，少样本问题广泛存在。在Wikidata中，约10%的关系涉及的三元组不超过10个。</p>
+<p>论文中将不同关系（如CountryCapital, CEOof等）涉及的三元组实体链接预测视为一个单独的任务，在测试的过程中使用训练集中未出现的关系链接预测作为新的任务。</p>
+<p><img src="./img/1.1.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="./img/1.6.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="Relation-specific-meta-information"><a href="#Relation-specific-meta-information" class="headerlink" title="Relation-specific meta information"></a>Relation-specific meta information</h2><p>关系特定元信息是从小样本中转换到未完善的三元组中的最重要的信息，即在一个相同的任务中应该是相同以及共享的知识。</p>
+<p>关系特定元信息可以从以下两个方面帮助我们进行链路预测：</p>
+<ol>
+<li>从观察的存在的三元组中传输相同的关系信息到不完整的三元组中</li>
+<li>仅仅通过观察少量样本就能加速一个任务的学习过程</li>
+</ol>
+<p>同时，基于上述的两个特点，本文提出了两种关系特定元信息：关系元和梯度元。在本文提出的MetaR框架中，关系元是连接头实体和尾实体的关系的高级表示；梯度元则是在预测任务—将关系元传输到不完整的三元组关系之前，用来快速更新的关系元的梯度损失。（也就是说，在关系元信息传递到不完整的三元组的时候，已经利用梯度元将关系元更新成一个稳定的信息表示）</p>
+<h2 id="Meta-Learning"><a href="#Meta-Learning" class="headerlink" title="Meta-Learning"></a>Meta-Learning</h2><p>元学习的目标是为了对于小样本寻找一个快速学习的能力，并且将这种学习能力泛化到更多的概念中。这种学习的模式接近于人类的学习方式。它可以看作是寻找一个向量空间上的任务的基，学习任务的本质，我们并不是通过学习具体任务（例如统计学习）来学会新的任务，而是通过抓住这些任务的本质以促进新任务的学习。</p>
+<h2 id="主要贡献"><a href="#主要贡献" class="headerlink" title="主要贡献"></a>主要贡献</h2><ol>
+<li><p>提出了一个用来针对小样本链接预测的元关系学习MetaR框架(传统的嵌入式模型需要依靠大量的训练数据，这就限制了其在小样本链路预测任务上的应用)</p>
+</li>
+<li><p>我们强调了具体的元关系信息在小样本链接预测任务中的重要地位，并且提出了两种具体的关系元信息</p>
+</li>
+<li><p>本文提出的MetaR框架在小样本链接预测任务上达到了最高水平，除此之外我们还分析了影响MetaR框架表现的具体因素</p>
+</li>
+</ol>
+<h2 id="任务制定"><a href="#任务制定" class="headerlink" title="任务制定"></a>任务制定</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><ol>
+<li><p>知识图谱 $\mathcal{G}= \{ \mathcal{E,R,TP} \}$，$\mathcal{E}$是实体集合，$\mathcal{R}$是关系集合，$\mathcal{TP=\{(h,r,t)\in E \times R \times E\}}$是三元组集合。</p>
+</li>
+<li><p>小样本链路预测任务$\mathcal{T}$ 在一个知识图谱$\mathcal{G}$中，给定一个支持集$\mathcal{S_r=\{(h_i,t_i)\in E\times E \vert } $ $ \mathcal{(h_i,r,t_i)\in TP\}}$ ，其中关系$\mathcal{r \in R}$，如果$\mathcal{|S_r|=K}$，那么预测和某个头节点$h_j$有着关系$r$的尾节点的任务就叫做K-样本连接预测预测，写作$r:(h_j,?)$。</p>
+<p>通过上面的定义，一个小样本的链接预测任务通常定义在一个具体的关系上。在预测的过程中，通常有超过一个的三元组需要被预测。与支持集$\mathcal{S_r}$相对应的是，我们定义一系列的需要被预测三元组，称之为查询集$Q_r = \{ r : ( h_j , ? )\}$。</p>
+</li>
+</ol>
+<h2 id="MetaR结构"><a href="#MetaR结构" class="headerlink" title="MetaR结构"></a>MetaR结构</h2><p><img src="./img/1.2.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="Relation-Meta-Learner"><a href="#Relation-Meta-Learner" class="headerlink" title="Relation-Meta Learner"></a>Relation-Meta Learner</h3><p>作用主要是从提供的Support Set中提取关系元，这个学习机的结构是用一个简单的神经网络。</p>
+<p><img src="./img/1.3.png" srcset="/img/loading.gif" lazyload></p>
+<p>在任务$\mathcal{T_r}$中，学习机的输入是给定的Support Set里面的头尾实体对$\{(h_i,t_i)\in S_r\}$，我们首次通过一个$L$层的神经网络提取出这些实体对的具体的关系元(specific relation meta)</p>
+<script type="math/tex; mode=display">
+\begin{aligned} \mathrm{x}^0&=\mathrm{h}_i⊕\mathrm{t}_i\\
+\mathrm{x}^l&=\sigma(\mathrm{W}^l\mathrm{x}^{l-1}+b^l)\\
+R_{(h_i,t_i)}&=\mathrm{W}^L\mathrm{x}^{L-1}+b^L \end{aligned}</script><p>$\large \mathrm{h}_i\in \mathbb{R}^d,\mathrm{t}_i\in \mathbb{R}^d$，是头实体$h_i$和尾实体$t_i$分别在d维空间的嵌入.$\mathrm{W}^l$和$b^l$分别是神经网络$l$层的权重和偏移。$\sigma $函数使用了LeakyReLU激活函数，$\mathrm{x⊕y}$代表向量拼接，最后的到的$R_{(h_i,t_i)}$代表了特定实体$h_i$和$t_i$的关系元。</p>
+<script type="math/tex; mode=display">
+R_{\mathcal{T_r}}= \frac{\sum_{i=1}^{K}R_{(h_i,t_i)}}{K}</script><p>有了很多实体对的特定关系元后，我们最后计算当前任务$\mathcal{T_r}$的最终关系元$R_{\mathcal{T_r}}$。</p>
+<h3 id="Embedding-Learner"><a href="#Embedding-Learner" class="headerlink" title="Embedding Learner"></a>Embedding Learner</h3><script type="math/tex; mode=display">
+s_{(h_i,t_i)}=||\mathrm{h}_i+R_{\mathcal{T_r}}-\mathrm{t}_i||</script><p>$||\mathrm{x}||$代表向量的L2范式，这种评分函数的基本思想来源于TransE模型，其假设的是一个真实的三元组满足$\mathrm{h+r=t}$的基本假设。因此这个评分函数定义的是$\mathrm{h+r}$和$\LARGE \mathrm{t}$之间的距离。这个方式转换到我们的链接预测中，由于我们的任务中没有直接普遍的关系嵌入编码，我们使用关系元信息$R_{\mathcal{T_r}}$来替代编码获得的关系$\mathrm{r}$，$R_{\mathcal{T_r}}$可以视为任务$\mathcal{T_r}$的关系编码。</p>
+<p>本文对每个三元组都进行了评分，并且设置了以下的合页损失函数：</p>
+<script type="math/tex; mode=display">
+L(S_r)=\sum_{(h_i,t_i)\in S_r}[\gamma+s_{(h_i,t_i)}-s_{(h_i,t'_i)}]_+</script><p>其中$[x]_+$表示的是样本x的positive part，$\gamma$是表示距离的超参数。$s_{(h_i,t’_i)}$是相对于正例实体对$(h_i,t_i)\in \mathcal{S_r}$的反例实体对$(h_i,t’_i)$，即$(h_i,r,t’_i)\notin \mathcal{G}$</p>
+<p>我们将基于$L(\mathcal{S_r})$的关系元$R_{\mathcal{T_r}}$的梯度作为梯度元$G_{\mathcal{T_r}}$:</p>
+<script type="math/tex; mode=display">
+G_{\mathcal{T_r}}=\nabla_{R_{\mathcal{T_r}}}L(S_r)</script><p>并且通过以下函数更新关系元:</p>
+<script type="math/tex; mode=display">
+R'_{\mathcal{T_r}}=R_{\mathcal{T_r}}-\beta G_{\mathcal{T_r}}</script><p>其中β为利用梯度元对关系元进行更新的步长因子，通过这个式子让模型在每个任务中精调。</p>
+<p>当基于编码学习器来对查询集中的实体进行评分的时候，我们使用更新之后的关系元。在获取到更新之后的关系元$R’$之后，我们将其转移到查询集$\mathcal{Q}_r={(h_j,t_j)}$中，然后计算其评分和查询集(Query Set)的损失情况，其计算评分和计算损失的公式和支持集(Support Set)中一样。</p>
+<script type="math/tex; mode=display">
+s(h_j,t_j)=||\mathrm{h}_j+R'_{\mathcal{T_r}}-\mathrm{t_j}||\\
+
+L(\mathcal{Q}_r)=\sum_{(h_j,t_j)\in \mathcal{Q_r}}[\gamma+s_{(h_j,t_j)}-s_{(h_j,t'_j)}]_+</script><p>使$L(\mathcal{Q}_r)$最小化就是我们这个训练的目标，我们通过这个参数去更新整个模型。</p>
+<script type="math/tex; mode=display">
+L=\sum_\mathcal{(S_r,Q_r)\in T_{train}}L(\mathcal{Q_r})</script><p>在训练中，我们的目的就是最小化$L$损失函数，他是各个任务中查询集损失函数的和。</p>
+<h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2><p><img src="./img/1.5.png" srcset="/img/loading.gif" lazyload></p>
+<p>MRR（Mean reciprocal rank）是一个国际上通用的对搜索算法进行评价的机制，即第一个结果匹配，分数为1，第二个匹配分数为0.5，第n个匹配分数为1/n，如果没有匹配的句子分数为0。最终的分数为所有得分之和。Hits@N代表正项在链路预测可能性的top N个实体中的比例。</p>
+<p>粗体的数字代表所有对比项中最好的结果，下划线数字代表GMatching中最好的结果。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/">论文解读</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/%E5%B0%8F%E6%A0%B7%E6%9C%AC%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/">小样本知识图谱</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Few-Shot-Knowledge-Graph/">Few-Shot Knowledge Graph</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Meta-Learning/">Meta Learning</a>
+                    
+                      <a class="hover-with-bg" href="/tags/KGC/">KGC</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Link-Prediction/">Link Prediction</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/05/27/2.%E5%A2%9E%E9%87%8F%E6%97%B6%E5%BA%8F%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E8%A1%A5%E5%85%A8%E6%A1%86%E6%9E%B6TIE/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SIGIR2021:增量时序知识图谱补全框架TIE</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: 'c29252f877c65bdf4782',
+          clientSecret: 'ae3f6dd67b1c019ce90d386cbd760073317e35c7',
+          repo: 'comment',
+          owner: 'ElliotXCC',
+          admin: ["ElliotXCC"],
+          id: '97245453068db03ca2fa013cfca9b217',
+          language: 'zh-CN',
+          labels: ["gitalk"],
+          perPage: 10,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: true
+        });
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a target="_blank" rel="nofollow noopener"><span>Copyright</span></a> <i class="iconfont icon-github-fill"></i> <a href="https://github.com/ElliotXCC" target="_blank" rel="nofollow noopener"><span style="margin-right:25px">Elliot</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        辽ICP备2021005801号
+      </a>
+    </span>
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?504dac09f9741c9c31be26083d1e5bd9";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

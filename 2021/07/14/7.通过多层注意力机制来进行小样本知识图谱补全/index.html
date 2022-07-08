@@ -1,0 +1,638 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>RGHAT:基于多层注意力机制的知识图谱补全框架 - Elliot&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"www.elliotx.cc","root":"/","version":"1.8.10","typing":{"enable":false,"typeSpeed":100,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"504dac09f9741c9c31be26083d1e5bd9","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"b1HLW0NIupw0Lhm5e1UXu3bX-gzGzoHsz","app_key":"zajFAfm7CySwr4eCAMCvngRD","server_url":"https://b1hlw0ni.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 50vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Elliot's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background_article.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.4)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="RGHAT:基于多层注意力机制的知识图谱补全框架">
+              
+                RGHAT:基于多层注意力机制的知识图谱补全框架
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-07-14 19:00" pubdate>
+        2021年7月14日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      20
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">RGHAT:基于多层注意力机制的知识图谱补全框架</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：1 年前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <center style="font-size:30px">Relational Graph Neural Network with Hierarchical Attention for Knowledge Graph Completion</center>
+
+
+
+<h2 id="问题-创新点"><a href="#问题-创新点" class="headerlink" title="问题/创新点"></a>问题/创新点</h2><p>知识图谱实体在嵌入时，并没有在局部上具体考虑某实体的neighborhood entity的分层级的、不同价值的信息对该实体的影响。</p>
+<p>本文提出的Relational Graph Neural Network with Hierarchical Attention（RGHAT）框架里主要创新运用了两种注意力机制：</p>
+<ol>
+<li>第一层注意力机制是关系级注意力（考虑的是不同关系对中心实体的影响）</li>
+<li>第二层注意力机制是实体级注意力（考虑的是相同关系的不同neighborhood实体对中心实体的影响）</li>
+</ol>
+<p>分层注意力机制使我们的模型更有效地利用实体的邻域信息。 </p>
+<p><img src="./img/10.28 1.png" srcset="/img/loading.gif" lazyload style="width:1200px"></p>
+<p>通过对知识图谱进行上述分层表示，我们模型所基于的考虑(intuition)是：并非所有相邻关系都对表示中心实体同样重要，并且在每个$N_{h,r}$中，并非所有相邻实体在关系r相连的情况下表示中心实体方面同样重要。</p>
+<h3 id="贡献"><a href="#贡献" class="headerlink" title="贡献"></a>贡献</h3><ul>
+<li>首先，与大多数现有的KGC模型不同，本文提出的模型非常具体地(explicitly)利用了每个实体的本地邻域信息。</li>
+<li>其次，理解了可以将层次结构视为本地相邻信息的集成，并且已经验证了将相关信息集成到组(groups)中是有益的，可提供更多信息并在机器学习任务中产生更好的结果。</li>
+<li>第三，在RGHAT中，分层注意力机制为模型提供了非常精细的(ﬁne-grained)学习过程，从而提高了模型的可解释性。 此外，在此设置下，可以以集体的(collective)方式训练具有相同关系的相邻三元组的权重，从而使我们的模型结果更稳定，更符合人类的直觉(intuition)。</li>
+</ul>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><p>模型整体是一个encoder-decoder结构。</p>
+<p>encoder首先将实体的本地邻域视为分层结构，然后计算该邻域的关系级注意力和实体级注意力。 接下来，将两个注意力得分合并为一个三级注意力得分，并将最终得分前馈给信息聚合器，后者可以将本地邻域信息有效地聚合到中心实体中。 最后，encoder将实体嵌入输出到decoder。 decoder是一个KGC模型，可以用许多现有的KGC模型代替。 此设置保证了我们模型的灵活性和可扩展性。 在本文中，作者选择ConvE模型作为decoder，因为它在本文进行的实验中表现最好。</p>
+<p><img src="./img/10.28 2.png" srcset="/img/loading.gif" lazyload style="width:1200px"></p>
+<h3 id="Encoder"><a href="#Encoder" class="headerlink" title="Encoder"></a>Encoder</h3><h4 id="关系级别注意力-Relation-Level-Attention"><a href="#关系级别注意力-Relation-Level-Attention" class="headerlink" title="关系级别注意力(Relation-Level Attention)"></a>关系级别注意力(Relation-Level Attention)</h4><p>设定关系级别的注意力是因为不同关系的权重在表示实体方面存在很大差异。 例如，从直觉上讲，$Los\ Angeles\ Lakers，has_players$关系比$based_in_city$关系更具指示性，因为一个团队的球员可以唯一地标识该球队，而可能有多个基于该球队的球队在同一个城市。</p>
+<p>在进行计算时，对中心需要表示的实体$e_1$本文将$(e_2,r,e_1)$转换为$(e_1,r^{-1},e_2)$进行计算。</p>
+<p>对于实体$h$，在表示实体时，关系级别的注意力得分表示每个关系的权重，可以被定义为：</p>
+<p><img src="./img/10.28 3.png" srcset="/img/loading.gif" lazyload style="width:600px"></p>
+<h4 id="实体级别注意力-Entity-Level-Attention"><a href="#实体级别注意力-Entity-Level-Attention" class="headerlink" title="实体级别注意力(Entity-Level Attention)"></a>实体级别注意力(Entity-Level Attention)</h4><p>实体级别的注意力机制，即相邻实体的对中心实体表示的权重也可能不同。 例如，关系中has_players将Los Angeles Lakers与其他球员联系起来，在所有这些球员中，当家球星可能比其他球员更能表示一支球队。</p>
+<p>所提出的模型首先将处于同一关系下的相邻实体(neighborhood entity)视为一个组，然后计算实体级注意力，如下所示：</p>
+<p><img src="./img/10.28 4.png" srcset="/img/loading.gif" lazyload style="width:600px"></p>
+<p>在上文两个级别的注意力得分都计算完毕之后，它们会被组合成一个三元组级的注意力得分：</p>
+<p><img src="./img/10.28 5.png" srcset="/img/loading.gif" lazyload style="width:600px"></p>
+<p>其代表了三元组在表示中心实体$h$时三元组$(h,r,t)$的权重。</p>
+<h4 id="信息聚合器-Information-Aggregator"><a href="#信息聚合器-Information-Aggregator" class="headerlink" title="信息聚合器(Information Aggregator)"></a>信息聚合器(Information Aggregator)</h4><p>信息聚合器将信息从本地邻域聚合到中央实体center entity，并获得实体h的基于邻域的表示形式，其表示为:</p>
+<p><img src="./img/10.28 6.png" srcset="/img/loading.gif" lazyload style="width:600px"></p>
+<p>但是上述得到的表示$\hat h$还缺少了自身的有价值的信息（上述计算$a_{h,r}$只是满足注意力机制的输入需求? 只有很少一部分自身信息），为了更好的表示目标实体，下面进一步将基于邻域的表示和输入表示$h$组合，获得输出表示$h’$：</p>
+<p><img src="./img/10.28 7.png" srcset="/img/loading.gif" lazyload style="width:600px"></p>
+<p>通过对图注意力网络的研究，本文也利用了多头注意力机制来稳定学习过程，提取有关领域的更多信息。</p>
+<script type="math/tex; mode=display">
+\mathbf{h}^{\prime}=\|_{k=1}^{K} \mathbf{h}_{k}^{\prime}</script><p>其中$\mathbf{h}_{k}^{\prime}$是第$k$个头的表示输出。在encoder的最后一层，作者将多头的表示做了平均处理作为最后的输出：</p>
+<script type="math/tex; mode=display">
+\mathbf{h}^{\prime}=\frac{1}{K} \sum_{k=1}^{K} \mathbf{h}_{k}^{\prime}</script><p>单层编码器在1次训练迭代中将one-hop的邻居实体的信息聚合到中央实体。 随着层数和迭代次数的增加，我们的模型可以有效地聚合来自多跳邻居的信息，这为表示中央实体提供了有价值的信息。 最终，编码器将嵌入h’的新实体输出到解码器。</p>
+<h3 id="Decoder"><a href="#Decoder" class="headerlink" title="Decoder"></a>Decoder</h3><h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>下图介绍了实验数据集的基本信息(实体种类，关系总类，训练集/验证集/测试集中三元组数量)</p>
+<p><img src="./img/10.28 8.png" srcset="/img/loading.gif" lazyload style="width:600px"></p>
+<p><img src="./img/10.28 9.png" srcset="/img/loading.gif" lazyload style="width:600px"></p>
+<p><img src="./img/10.28 10.png" srcset="/img/loading.gif" lazyload style="width:1000px"></p>
+<p>最后作者其实还对单个实体的不同级别的注意力进行了细致的分析（下图分别是$Los\ Angeles\ Lakers和Tom\ Hanks$）：</p>
+<p><img src="./img/10.28 11.png" srcset="/img/loading.gif" lazyload style="width:800px"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/">论文解读</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/">知识图谱</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/KGC/">KGC</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Knowledge-Graph/">Knowledge Graph</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/07/16/8.%E5%B0%8F%E6%A0%B7%E6%9C%AC%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E8%A1%A5%E5%85%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">FSRL:小样本知识图谱补全框架</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/07/05/5.One-shot%20Relation%20Learning/">
+                        <span class="hidden-mobile">GMatching:一种小样本知识图谱补全框架</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: 'c29252f877c65bdf4782',
+          clientSecret: 'ae3f6dd67b1c019ce90d386cbd760073317e35c7',
+          repo: 'comment',
+          owner: 'ElliotXCC',
+          admin: ["ElliotXCC"],
+          id: 'f4f05d72bf78bf0b1256229b3c037215',
+          language: 'zh-CN',
+          labels: ["gitalk"],
+          perPage: 10,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: true
+        });
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a target="_blank" rel="nofollow noopener"><span>Copyright</span></a> <i class="iconfont icon-github-fill"></i> <a href="https://github.com/ElliotXCC" target="_blank" rel="nofollow noopener"><span style="margin-right:25px">Elliot</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        辽ICP备2021005801号
+      </a>
+    </span>
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?504dac09f9741c9c31be26083d1e5bd9";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

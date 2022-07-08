@@ -1,0 +1,646 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>RAN:用于低资源条件下知识图谱补全的关系对抗网络 - Elliot&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"www.elliotx.cc","root":"/","version":"1.8.10","typing":{"enable":false,"typeSpeed":100,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"504dac09f9741c9c31be26083d1e5bd9","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"b1HLW0NIupw0Lhm5e1UXu3bX-gzGzoHsz","app_key":"zajFAfm7CySwr4eCAMCvngRD","server_url":"https://b1hlw0ni.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 50vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Elliot's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background_article.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.4)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="RAN:用于低资源条件下知识图谱补全的关系对抗网络">
+              
+                RAN:用于低资源条件下知识图谱补全的关系对抗网络
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-07-29 19:00" pubdate>
+        2021年7月29日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      34
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">RAN:用于低资源条件下知识图谱补全的关系对抗网络</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：1 年前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <center style="font-size:30px">Relation Adversarial Network for Low Resource Knowledge Graph Completion</center>
+
+<center>WWW 2020</center>
+
+<h2 id="贡献"><a href="#贡献" class="headerlink" title="贡献"></a>贡献</h2><ol>
+<li><p>本文首次将对抗性迁移学习应用于解决知识图完成的低资源问题（Low Resource Problem），主要针对的是链路预测和关系提取任务。</p>
+</li>
+<li><p>提出了关系对抗网络，利用关系鉴别器来区分来自不同关系的样本，然后学习从源关系到目标关系的持久性的特征。</p>
+</li>
+<li><p>提出了一种关系门控机制，充分放宽了共享标签空间的假设。该机制能够筛选出离群源关系/样本，缓解不相关关系/样本的负迁移，可以在端到端框架中进行训练。</p>
+</li>
+</ol>
+<p>本文提出了一个<strong>加权关系对抗网络</strong>（Weighted Relation Adversarial Network，wRAN）的通用框架，该框架利用对抗过程，将从资源丰富的关系中学到的知识/特征，去适应不同但相关的低资源关系。wRAN框架综合考虑了三部分问题：<strong>对抗迁移学习</strong>（Adversarial Transfer Learning），核心思想是通过对抗性学习过程提取领域不变性特征，该过程能够减少源域和目标域之间的分布差异；<strong>关系对抗网络</strong>（Relation Adversarial Network），学习通用的关系不变性特征，以此弄清不同关系背后的语言变化因素，并缩小相关关系之间的语言差异；<strong>负迁移</strong>（Negative Transfer），区别于标准的domain adaption源域和目标域之间的标签空间完全相同且共享，wRAN考虑从多个源关系到一个或多个目标关系的适应，并且考虑了不同的关系可能对迁移产生不同的影响，离群的源关系在与目标关系做判别时可能导致负迁移。</p>
+<p><img src="./img/20.1.png" srcset="/img/loading.gif" lazyload style="width:1200px"></p>
+<h3 id="负迁移"><a href="#负迁移" class="headerlink" title="负迁移"></a>负迁移</h3><p>如图中所示，RAN模型期望从三个源关系(place_of_death，place_of_birth和country)中学习一般的位置信息，然后将隐含知识适应于目标关系(place_of_burial)，以提高其预测性能。由于不同的关系可能对迁移产生不同的影响，并且在区分目标关系时存在可能导致负迁移的离群源关系。如图2所示，capital可能会导致向目标关系place_of_burial​的负迁移，因为其并不描述人与地方的关系。</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p><img src="./img/20.2.png" srcset="/img/loading.gif" lazyload style="width:1200px"></p>
+<h3 id="实例编码机-Instance-Encoder"><a href="#实例编码机-Instance-Encoder" class="headerlink" title="实例编码机(Instance Encoder)"></a>实例编码机(Instance Encoder)</h3><p>实例编码机的作用是根据不同的任务类型，给定一个实体对或句子实例，利用神经网络将实例语义编码为一个向量。在本研究中，我们使用卷积神经网络(CNNs)来实现实例编码器，同时考虑了模型性能和时间效率。</p>
+<p><img src="./img/20.3.png" srcset="/img/loading.gif" lazyload style="width:600px"></p>
+<p>我们将非线性变换$F(·)$​应用于$V$​的向量表示，得到一个特征向量$F = F(V;θ)$​。我们选择了两种卷积神经结构CNN和PCNN，将输入嵌入编码到实例嵌入中。还可以使用RNN等其他神经结构，以及ELMo和BERT等更复杂的方法。我们对这两个关系都采用非共享特征提取器，因为非共享提取器能够捕获更多关系特定的特征。本文通过学习源特征提取器$F_s$​和分类器$C$​来训练源鉴别模型$C(F_S(x;\theta))$​用于分类任务：</p>
+<script type="math/tex; mode=display">
+\min _{F_{s}, C} \mathbb{L}_{s}=\mathbb{E}_{x, y \sim p_{s}(x, y)} L\left(C\left(F_{s}(x ; \theta)\right), y\right)</script><p>其中y是源数据的标签，$L(\cdot)$是分类器的损失函数。</p>
+<h3 id="对抗关系适应-Adversarial-Relation-Adaptation"><a href="#对抗关系适应-Adversarial-Relation-Adaptation" class="headerlink" title="对抗关系适应(Adversarial Relation Adaptation)"></a>对抗关系适应(Adversarial Relation Adaptation)</h3><p>为了构建关系对抗网络RAN，我们采用了标准的对抗迁移学习框架，类似但不同的是，wRAN是一个两者对抗的对抗学习过程，其中第一个参与者是被训练来区分源关系和目标关系的关系鉴别器D，第二个参与者是特征提取器F，它同时被训练来混淆关系鉴别器，并希望学习从源到目标关系的共同特征。一般的想法是同时学习关系鉴别和关系不变的特征，其中源数据的标签预测器的损失最小，而关系鉴别器的损失最大。</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\min _{F_{s}, F_{t}} \max _{D} \mathbb{L}\left(D, F_{s}, F_{t}\right)=& \mathbb{E}_{x \sim p_{s}(x)}\left[\log D\left(F_{s}(x)\right)\right]+\\
+& \mathbb{E}_{x \sim p_{t}(x)}\left[1-\log D\left(F_{t}(x)\right)\right]
+\end{aligned}</script><p>其中$F_s$和$F_t$分别是源数据和目标数据的特征提取器，$D$表示的是二分类的关系鉴别器（对应GAN中的鉴别器，将所有源数据标签置为1，所以目标数据标签置为0）。</p>
+<h3 id="加权关系适应-Weighted-Relation-Adaptation"><a href="#加权关系适应-Weighted-Relation-Adaptation" class="headerlink" title="加权关系适应(Weighted Relation Adaptation)"></a>加权关系适应(Weighted Relation Adaptation)</h3><p>我们提出了一种关系门机制来识别不相关的源关系/样本，并自动降低它们的权重，以解决负迁移问题。</p>
+<h4 id="关系相关度-Relation-Correlation"><a href="#关系相关度-Relation-Correlation" class="headerlink" title="关系相关度(Relation Correlation)"></a>关系相关度(Relation Correlation)</h4><p>源分类器$C(F_s(x_i))$揭示了源关系空间$r_s$上的概率分布。这个分布很好地描述了分配$x_i$给每个$|r_s|$关系的概率。我们平均标签预测$\hat{y}_i = C(F_s(x_i)),x_i \in D_t$,在所有目标数据,因为它是可能的来源分类器可以在某个目标上犯一些错误数据和分配大概率为false关系甚至离群值的关系。每个源关系对训练的贡献的权重可以计算如下：</p>
+<script type="math/tex; mode=display">
+w^{\text {relation }}=\frac{1}{n_{t}} \sum_{i=1}^{n_{t}} \hat{y}_{i}</script><p>$w^{\text {relation }}$是一个$|r_s|$维的用来量化每个不同的元关系的贡献度的权重向量。</p>
+<h4 id="实例转移能力-Instance-Transfer-Ability"><a href="#实例转移能力-Instance-Transfer-Ability" class="headerlink" title="实例转移能力(Instance Transfer Ability)"></a>实例转移能力(Instance Transfer Ability)</h4><p>给定源目标关系的实例编码器，我们利用预先训练的辅助关系鉴别器进行实例权值学习。我们将辅助关系鉴别器最优参数的输出作为实例权值。其概念是，如果辅助关系鉴别器的激活量较大，则该鉴别器几乎可以正确地鉴别出样本与目标关系，这意味着样本很可能是不可转移的。实际上，在已知实例编码器学习到的$F_s$的情况下，通过优化$F_t(x)$和辅助关系鉴别器$D_a$，利用关系对抗损失来减少关系之间的移动:</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\min _{F_{t}} \max _{D_{a}} \mathbb{L}_{d}\left(D_{a}, F_{s}, F_{t}\right)=& \mathbb{E}_{x \sim p_{s}(x)}\left[\log D_{a}\left(F_{s}(x)\right)\right]+\\
+& \mathbb{E}_{x \sim p_{t}(x)}\left[1-\log D_{a}\left(F_{t}(x)\right)\right]
+\end{aligned}</script><p>为了避免退化解，我们用$F_s$的参数初始化$F_t$。辅助关系鉴别器由$D_a(f)=p(y=1|x)$给出，其中$x$是来自源和目标关系的输入。如果$D_a(f)\equiv 1$，那么样本很可能是不可转移的，因为它可以通过关系鉴别器几乎完全区别于目标分布。这些样本的贡献应该很小。因此，权值函数应该与$D_a(f)$成反比，定义源样本权值的一个自然方法是:</p>
+<script type="math/tex; mode=display">
+w_{i}^{\text {instance }}=\frac{1}{\frac{D_{a}\left(F_{s}(x)\right)}{D_{a}\left(F_{t}(x)\right)}+1}=1-D_{a}(f)</script><h4 id="关系门机制-Relation-gate-Mechanism"><a href="#关系门机制-Relation-gate-Mechanism" class="headerlink" title="关系门机制(Relation-gate Mechanism)"></a>关系门机制(Relation-gate Mechanism)</h4><p>关系权重和实例权重都是有用的。但可以明显看出，不同粒度的权重对不同的目标关系有不同的贡献。一方面，对于源关系语义相似度较低的目标关系(如located_in)，加强关系权值有利于减少离群关系的负面影响。另一方面，对于具有许多语义上相似的源关系(如live_in、was_born_in)的目标关系(如educated_in)，很难区分不同源关系的影响，这表明有必要学习细粒度的实例权重。因此，对于标号为$y_j$​​​​的源关系中的实例，该实例的权值为:</p>
+<script type="math/tex; mode=display">
+w_{i}^{\text {total }}=\alpha w_{i}^{\text {instance }}+(1-\alpha) w_{j}^{\text {relation }}</script><p>$w_{j}^{\text {relation }}$是向量$w^{\text {relation }}$第$j$个维度的值。然后使用$w_{i}^{t o t a l}=\frac{n_{s} w_{i}^{t o t a l}}{\sum_{i=1}^{n_{s}} w_{i}^{t o t a l}}$将权重标准化。其中$\alpha$是关系门用来平衡关系权重和实例权重的超参数。</p>
+<script type="math/tex; mode=display">
+\alpha=\sigma\left(W_{r} F_{t}(x)\right)</script><p>其中$\sigma$是激活函数，$W_r$是权重矩阵。</p>
+<h3 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h3><h4 id="目标函数"><a href="#目标函数" class="headerlink" title="目标函数"></a>目标函数</h4><script type="math/tex; mode=display">
+\begin{array}{l}
+\min _{F_{t}} \max _{D_{r}} \mathbb{L}_{w}\left(C, D_{r}, F_{s}, F_{t}\right)= \\
+\quad \mathbb{E}_{x \sim p_{s}(x)}\left[w^{t o t a l} \log D_{r}\left(F_{s}(x)\right)\right]+ \\
+\quad \mathbb{E}_{x \sim p_{t}(x)}\left[1-\log D_{r}\left(F_{t}(x)\right)\right]
+\end{array}</script><p>其中$D_r$​是关系对抗辨别器，其中权值$w^{total}$​是自动计算并分配给源关系数据的，以弱化关于部分自适应的离群关系和不可转移的实例，这可以减轻负迁移。整个培训过程如下所示。</p>
+<p><img src="./img/20.4.png" srcset="/img/loading.gif" lazyload style="width:600px"></p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p><img src="./img/20.5.png" srcset="/img/loading.gif" lazyload style="width:600px"></p>
+<p><img src="./img/20.6.png" srcset="/img/loading.gif" lazyload style="width:1000px"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/">论文解读</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/">知识图谱</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/KGC/">KGC</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Knowledge-Graph/">Knowledge Graph</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Relation-Extraction/">Relation Extraction</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/17/12.Java%E5%9F%BA%E7%A1%80-%E6%B3%9B%E5%9E%8B%E4%B8%8E%E5%8F%8D%E5%B0%84/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile"></span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/07/16/8.%E5%B0%8F%E6%A0%B7%E6%9C%AC%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E8%A1%A5%E5%85%A8/">
+                        <span class="hidden-mobile">FSRL:小样本知识图谱补全框架</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: 'c29252f877c65bdf4782',
+          clientSecret: 'ae3f6dd67b1c019ce90d386cbd760073317e35c7',
+          repo: 'comment',
+          owner: 'ElliotXCC',
+          admin: ["ElliotXCC"],
+          id: '1b103e6ae079660c8b871bfb11135c9f',
+          language: 'zh-CN',
+          labels: ["gitalk"],
+          perPage: 10,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: true
+        });
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a target="_blank" rel="nofollow noopener"><span>Copyright</span></a> <i class="iconfont icon-github-fill"></i> <a href="https://github.com/ElliotXCC" target="_blank" rel="nofollow noopener"><span style="margin-right:25px">Elliot</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        辽ICP备2021005801号
+      </a>
+    </span>
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?504dac09f9741c9c31be26083d1e5bd9";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
