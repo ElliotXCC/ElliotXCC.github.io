@@ -187,7 +187,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.2k 字
+      2.1k 字
     </span>
   
 
@@ -239,7 +239,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：1 年前
+                  本文最后更新于：1 小时前
                 
               </p>
             
@@ -256,23 +256,23 @@
 <p><img src="./img/18.1.png" srcset="/img/loading.gif" lazyload></p>
 <p>如果我们将已知实体和表示后的未知实体可视化，结果会如图所示：</p>
 <p><img src="./img/18.2.png" srcset="/img/loading.gif" lazyload style="width:400px"></p>
-<p>形式上，每个以$p(\mathcal T)$为分布的任务$\mathcal T$都对应未知实体集合$\mathcal{E}_{\mathcal{T}} \subset \mathcal{E}^{\prime}$，并且预先定义这个集合的数量为$N$。然后将这些实体$e_{i}^{\prime} \in \mathcal{E}_{\mathcal{T}}$关联的三元组分为支持集和查询集：$\mathcal{T}=\bigcup_{i=1}^{N} \mathcal{S}_{i} \cup \mathcal{Q}_{i}$，此时$\mathcal{S}_{i}$和$\mathcal{Q}_{i}$定义如下：</p>
+<p>形式上，每个以$p(\mathcal T)$为分布的任务$\mathcal T$都对应未知实体集合$\mathcal{E}<em>{\mathcal{T}} \subset \mathcal{E}^{\prime}$，并且预先定义这个集合的数量为$N$。然后将这些实体$e</em>{i}^{\prime} \in \mathcal{E}<em>{\mathcal{T}}$关联的三元组分为支持集和查询集：$\mathcal{T}=\bigcup</em>{i=1}^{N} \mathcal{S}<em>{i} \cup \mathcal{Q}</em>{i}$，此时$\mathcal{S}<em>{i}$和$\mathcal{Q}</em>{i}$定义如下：</p>
 <script type="math/tex; mode=display">
 \mathcal{S}_{i}=\left\{\left(e_{i}^{\prime}, r_{j}, \tilde{e}_{j}\right) \text { or }\left(\tilde{e}_{j}, r_{j}, e_{i}^{\prime}\right)\right\}_{j=1}^{K} \text { and } \mathcal{Q}_{i}=\left\{\left(e_{i}^{\prime}, r_{j}, \tilde{e}_{j}\right) \text { or }\left(\tilde{e}_{j}, r_{j}, e_{i}^{\prime}\right)\right\}_{j=K+1}^{M_{i}} ; \tilde{e}_{j} \in\left(\mathcal{E} \cup \mathcal{E}^{\prime}\right)，</script><p>K是小样本学习的size，$M_i$是每个未知实体关联的三元组数量。我们的元学习目标是学习用一个支持集$\mathcal S$和一个元函数$f$来表示不可见的实体$\phi$，用一个分数函数来最大化查询集合上的三元组分数如下：</p>
 <script type="math/tex; mode=display">
-\max _{\theta} \mathbb{E}_{\mathcal{T} \sim p(\mathcal{T})}\left[\frac{1}{N} \sum_{i=1}^{N} \frac{1}{\left|\mathcal{Q}_{i}\right|} \sum_{j=K+1}^{M_{i}} s\left(e_{i}^{\prime}, r_{j}, \tilde{e}_{j} ; \phi_{i}, \theta\right) \text { or } s\left(\tilde{e}_{j}, r_{j}, e_{i}^{\prime} ; \phi_{i}, \theta\right)\right], \phi_{i}=f_{\theta}\left(\mathcal{S}_{i}\right)</script><p>在本文中，我们引用这个特定的设置K样本的图外(OOG)链接预测。一旦用元训练任务$\mathcal{T}_{\text {train }}$对模型进行训练，我们就可以将其应用到未知的元测试任务$\mathcal{T}_{\text {test }}$，它的实体集与$\mathcal{T}_{\text {train }}$不相交。</p>
+\max _{\theta} \mathbb{E}_{\mathcal{T} \sim p(\mathcal{T})}\left[\frac{1}{N} \sum_{i=1}^{N} \frac{1}{\left|\mathcal{Q}_{i}\right|} \sum_{j=K+1}^{M_{i}} s\left(e_{i}^{\prime}, r_{j}, \tilde{e}_{j} ; \phi_{i}, \theta\right) \text { or } s\left(\tilde{e}_{j}, r_{j}, e_{i}^{\prime} ; \phi_{i}, \theta\right)\right], \phi_{i}=f_{\theta}\left(\mathcal{S}_{i}\right)</script><p>在本文中，我们引用这个特定的设置K样本的图外(OOG)链接预测。一旦用元训练任务$\mathcal{T}<em>{\text {train }}$对模型进行训练，我们就可以将其应用到未知的元测试任务$\mathcal{T}</em>{\text {test }}$，它的实体集与$\mathcal{T}_{\text {train }}$不相交。</p>
 <p>模型训练单个任务$\mathcal T$时的示意图如下，其利用支持集S通过归纳(Inductive)和转导(Transductive)学习进行知识外推，然后预测与输出嵌入$\phi’$的链接：</p>
 <p><img src="./img/18.4.png" srcset="/img/loading.gif" lazyload style="width:400px"></p>
-<h3 id="图外推网络"><a href="#图外推网络" class="headerlink" title="图外推网络"></a>图外推网络</h3><p>为了通过支持集$\mathcal{S}_{i}$将给定图$\mathcal{G}$的知识外推到不可见实体，我们提出了一种基于GNN的元学习机，输出未知实体的表示。（图中Inductive层）我们的元学习者$f_{\theta}(\cdot)$公式如下：</p>
+<h3 id="图外推网络"><a href="#图外推网络" class="headerlink" title="图外推网络"></a>图外推网络</h3><p>为了通过支持集$\mathcal{S}<em>{i}$将给定图$\mathcal{G}$的知识外推到不可见实体，我们提出了一种基于GNN的元学习机，输出未知实体的表示。（图中Inductive层）我们的元学习者$f</em>{\theta}(\cdot)$公式如下：</p>
 <script type="math/tex; mode=display">
-f_{\theta}\left(\mathcal{S}_{i}\right)=\frac{1}{K} \sum_{(r, e) \in n\left(\mathcal{S}_{i}\right)} \mathbf{W}_{r} C_{r, e}</script><p>其中$n(\cdot)$是邻居实体和关系的集合:$n\left(\mathcal{S}_{i}\right)=\left\{(r, e) \mid\left(e_{i}^{\prime}, r, e\right)\right.$ or $\left.\left(e, r, e_{i}^{\prime}\right) \in \mathcal{S}_{i}\right\}$, K是集合中实体和邻居的数量，W是元学习的具体关系变换矩阵，$\mathbf C_{r, e}$是关系-实体对的表示的拼接。</p>
+f_{\theta}\left(\mathcal{S}_{i}\right)=\frac{1}{K} \sum_{(r, e) \in n\left(\mathcal{S}_{i}\right)} \mathbf{W}_{r} C_{r, e}</script><p>其中$n(\cdot)$是邻居实体和关系的集合:$n\left(\mathcal{S}<em>{i}\right)=\left{(r, e) \mid\left(e</em>{i}^{\prime}, r, e\right)\right.$ or $\left.\left(e, r, e<em>{i}^{\prime}\right) \in \mathcal{S}</em>{i}\right}$, K是集合中实体和邻居的数量，W是元学习的具体关系变换矩阵，$\mathbf C_{r, e}$是关系-实体对的表示的拼接。</p>
 <h3 id="图外推网络上的元学习"><a href="#图外推网络上的元学习" class="headerlink" title="图外推网络上的元学习"></a>图外推网络上的元学习</h3><p>本文先前描述了归纳的GEN通过支持集$\mathcal S_i$构造每个未知实体的表示，然后在查询集$\mathcal Q_i$上独立地执行链接预测。这种归纳方案的一个主要缺点是它没有考虑未知实体之间的关系。然而，要将看不见的实体作为一个集合进行同时处理，我们不仅应该考虑已知实体和未知实体之间的关系，还应该考虑未知实体之间的关系。为了解决这个问题，我们扩展了归纳的GEN来进一步执行一个转导推理，这将允许知识在未知实体之间传播。（图中Transductive层）</p>
 <script type="math/tex; mode=display">
-g_{\theta}\left(\mathcal{S}_{i}, \phi\right)=\frac{1}{K} \sum_{(r, e) \in n\left(\mathcal{S}_{i}\right)} \mathbf{W}_{r}^{\prime} C_{r, e}+\mathbf{W}_{0} \phi_{i}</script><p>其中$\mathbf{W}_{0} \in \mathbb{R}^{d \times d}$是一个用来关注嵌入$\phi_i$的自连接权重矩阵。为了利用邻域未知实体的知识，本文的Transductive层$g_{\theta}(\cdot)$用一个加权矩阵$\mathbf{W}_{r}’ \in \mathbb{R}^{d \times 2d}$聚集了所有邻域的表示，其中邻域可以包含未知实体的嵌入$\phi$，而不是像之前的归纳方案那样把它们当作噪声或者忽略它们为零向量。</p>
-<h3 id="随机推断-Stochastic-Inference"><a href="#随机推断-Stochastic-Inference" class="headerlink" title="随机推断 Stochastic Inference"></a>随机推断 Stochastic Inference</h3><p>一个朴素的Transductive GEN通过在元训练中通过已知实体来模拟未知实体来概括未知实体。然而，由于每个实体只有几个三元体的少量OOG链接预测具有内在的不可靠性，因此在未知实体的表示上可能存在很高的不确定性。为了模拟这种不确定性，我们通过学习嵌入$\phi_{i}^{\prime}$在未知实体上的分布来随机编码未知实体。为此，我们首先假设真实后验分布有如下形式:$p\left(\phi_{i}^{\prime} \mid \mathcal{S}_{i}, \phi\right)$。因为计算真实的后验分布是棘手的,我们近似后使用$q\left(\phi_{i}^{\prime} \mid \mathcal{S}_{i}, \phi\right)=\mathcal{N}\left(\phi_{i}^{\prime} \mid \mu_{i}, \operatorname{diag}\left(\sigma_{i}^{2}\right)\right)$,然后通过两个transductive层计算均值和方差:$\mu_{i}=g_{\theta_{\mu}}\left(\mathcal{S}_{i}, \phi\right)$ 和 $\sigma_{i}=g_{\theta_{\sigma}}\left(\mathcal{S}_{i}, \phi\right)$。<em>最大化分数函数$s$的形式定义如下</em>：</p>
+g_{\theta}\left(\mathcal{S}_{i}, \phi\right)=\frac{1}{K} \sum_{(r, e) \in n\left(\mathcal{S}_{i}\right)} \mathbf{W}_{r}^{\prime} C_{r, e}+\mathbf{W}_{0} \phi_{i}</script><p>其中$\mathbf{W}<em>{0} \in \mathbb{R}^{d \times d}$是一个用来关注嵌入$\phi_i$的自连接权重矩阵。为了利用邻域未知实体的知识，本文的Transductive层$g</em>{\theta}(\cdot)$用一个加权矩阵$\mathbf{W}_{r}’ \in \mathbb{R}^{d \times 2d}$聚集了所有邻域的表示，其中邻域可以包含未知实体的嵌入$\phi$，而不是像之前的归纳方案那样把它们当作噪声或者忽略它们为零向量。</p>
+<h3 id="随机推断-Stochastic-Inference"><a href="#随机推断-Stochastic-Inference" class="headerlink" title="随机推断 Stochastic Inference"></a>随机推断 Stochastic Inference</h3><p>一个朴素的Transductive GEN通过在元训练中通过已知实体来模拟未知实体来概括未知实体。然而，由于每个实体只有几个三元体的少量OOG链接预测具有内在的不可靠性，因此在未知实体的表示上可能存在很高的不确定性。为了模拟这种不确定性，我们通过学习嵌入$\phi<em>{i}^{\prime}$在未知实体上的分布来随机编码未知实体。为此，我们首先假设真实后验分布有如下形式:$p\left(\phi</em>{i}^{\prime} \mid \mathcal{S}<em>{i}, \phi\right)$。因为计算真实的后验分布是棘手的,我们近似后使用$q\left(\phi</em>{i}^{\prime} \mid \mathcal{S}<em>{i}, \phi\right)=\mathcal{N}\left(\phi</em>{i}^{\prime} \mid \mu<em>{i}, \operatorname{diag}\left(\sigma</em>{i}^{2}\right)\right)$,然后通过两个transductive层计算均值和方差:$\mu<em>{i}=g</em>{\theta<em>{\mu}}\left(\mathcal{S}</em>{i}, \phi\right)$ 和 $\sigma<em>{i}=g</em>{\theta<em>{\sigma}}\left(\mathcal{S}</em>{i}, \phi\right)$。<em>最大化分数函数$s$的形式定义如下</em>：</p>
 <script type="math/tex; mode=display">
 s\left(e_{h}, r, e_{t}\right)=\frac{1}{L} \sum_{l=1}^{L} s\left(e_{h}, r, e_{t} ; \phi^{\prime(l)}, \theta\right), \quad \phi^{\prime(l)} \sim q\left(\phi^{\prime} \mid \mathcal{S}, \phi\right)</script><p>为提高计算效率，作者在元训练meta-traning时将MC样本量设为L = 1。此外，我们在元测试meta-test时使用足够大的样本量(例如L = 10)进行MC近似(MC approximation)。然后，我们的最终GEN通过随机推理训练Inductive和Transductive步骤。</p>
-<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><p>每个任务$\mathcal T$对应一组未知实体$\mathcal{E}_{\mathcal{T}} \subset \mathcal{E}^{\prime}$，包含了一个支持集和一个查询集组成:$\mathcal{T}=\{\mathcal{S}, \mathcal{Q}\}$。在训练过程中，我们使用支持集$\mathcal S$来表示未知实体$e_{i}^{\prime} \in \mathcal{E}_{\mathcal{T}}$的嵌入。然后，在测试时，我们使用正样本的查询集$\mathcal{Q}_{i}$来优化我们的GEN。由于每个查询集只包含正采样的三元组，我们执行负采样，通过允许元学习者区分正三元组和负三元组来更新元学习者。具体来说，我们替换查询集中每个三元组的实体:$\mathcal{Q}_{i}^{-}=\left\{\left(e_{i}^{\prime}, r, e^{-}\right)\right.$ or $\left.\left(e^{-}, r, e_{i}^{\prime}\right) \mid e^{-} \in \mathcal{E}\right\}$，其中$e^-$为负采样的实体。然后我们使用铰链损失优化我们的模型如下：</p>
+<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><p>每个任务$\mathcal T$对应一组未知实体$\mathcal{E}<em>{\mathcal{T}} \subset \mathcal{E}^{\prime}$，包含了一个支持集和一个查询集组成:$\mathcal{T}={\mathcal{S}, \mathcal{Q}}$。在训练过程中，我们使用支持集$\mathcal S$来表示未知实体$e</em>{i}^{\prime} \in \mathcal{E}<em>{\mathcal{T}}$的嵌入。然后，在测试时，我们使用正样本的查询集$\mathcal{Q}</em>{i}$来优化我们的GEN。由于每个查询集只包含正采样的三元组，我们执行负采样，通过允许元学习者区分正三元组和负三元组来更新元学习者。具体来说，我们替换查询集中每个三元组的实体:$\mathcal{Q}<em>{i}^{-}=\left{\left(e</em>{i}^{\prime}, r, e^{-}\right)\right.$ or $\left.\left(e^{-}, r, e_{i}^{\prime}\right) \mid e^{-} \in \mathcal{E}\right}$，其中$e^-$为负采样的实体。然后我们使用铰链损失优化我们的模型如下：</p>
 <script type="math/tex; mode=display">
 \mathcal{L}\left(\mathcal{Q}_{i}\right)=\sum_{\left(e_{h}, r, e_{t}\right) \in \mathcal{Q}_{i}} \sum_{\left(e_{h}, r, e_{t}\right)^{-} \in \mathcal{Q}_{i}^{-}} \max \left\{\gamma-s^{+}\left(e_{h}, r, e_{t}\right)+s^{-}\left(e_{h}, r, e_{t}\right)^{-}, 0\right\}</script><h3 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h3><p><img src="./img/18.3.png" srcset="/img/loading.gif" lazyload style="width:600px"></p>
 <p>上述的三元组打分函数可以用如下几种方式实现：</p>

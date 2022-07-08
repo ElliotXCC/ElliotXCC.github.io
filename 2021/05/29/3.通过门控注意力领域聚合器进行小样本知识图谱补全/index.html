@@ -239,7 +239,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：1 年前
+                  本文最后更新于：1 小时前
                 
               </p>
             
@@ -267,7 +267,7 @@
 \begin{aligned}
 \mathbf{c}_{i} &=\mathbf{W}_{1}\left[\mathbf{r}_{i} ; \mathbf{e}_{i}\right] \\
 d_{i} &=\text { LeakyReLU} \left(\mathbf{U}_{1}^{\top} \mathbf{c}_{i}\right)
-\end{aligned}</script><p>$\mathbf{W}_{1}$是线性变换矩阵，$\mathbf{U}_{1}$是权重矩阵然后通过LeakyReLU激活函数获得不同邻居的注意力值。然后使用softmax函数将获取到的注意力值和每个邻居都联系起来：</p>
+\end{aligned}</script><p>$\mathbf{W}<em>{1}$是线性变换矩阵，$\mathbf{U}</em>{1}$是权重矩阵然后通过LeakyReLU激活函数获得不同邻居的注意力值。然后使用softmax函数将获取到的注意力值和每个邻居都联系起来：</p>
 <script type="math/tex; mode=display">
 \alpha_{i}=\operatorname{softmax}\left(d_{i}\right)=\frac{\exp \left(d_{i}\right)}{\sum\left(r_{i}, e_{i}\right) \in \mathcal{N}_{e} \exp \left(d_{i}\right)}</script><p>为了消除在表示小样本关系时，由于稀疏邻域导致的噪声邻居实体的影响，作者采用了门值g来自动确定激活实体e的邻居实体的程度（degree）：</p>
 <script type="math/tex; mode=display">
@@ -311,7 +311,7 @@ L\left(S_{r}\right)=\sum_{\left(h_{i}, r, t_{i}\right) \in S_{r}} \sum_{\left(h_
 <script type="math/tex; mode=display">
 \operatorname{Grad}\left(r^{\prime}\right)=\frac{\mathrm{d} L\left(S_{r}\right)}{\mathrm{d} r^{\prime}}</script><p>然后通过学习率为$l$的随机梯度下降更新：</p>
 <script type="math/tex; mode=display">
-r_{m}=r^{\prime}-l_{r} G r a d\left(r^{\prime}\right)</script><p>通过模型无关元学习(model agnostic meta learning—MAML)方法能够学习每个小样本关系的超平面参数$P_r$。对于任务$T_r$上的超平面参数$P_r$，当适应新任务$T_{r’}$时，超平面参数变为$P’_{r}$。 在MAML之后，更新的参数是由当前任务$S_r$的支持集上的一个（或某些）梯度下降更新来计算的。 例如，参数$P_r$可以通过单个梯度步骤以学习速率𝑙进行更新，如下所示： </p>
+r_{m}=r^{\prime}-l_{r} G r a d\left(r^{\prime}\right)</script><p>通过模型无关元学习(model agnostic meta learning—MAML)方法能够学习每个小样本关系的超平面参数$P<em>r$。对于任务$T_r$上的超平面参数$P_r$，当适应新任务$T</em>{r’}$时，超平面参数变为$P’_{r}$。 在MAML之后，更新的参数是由当前任务$S_r$的支持集上的一个（或某些）梯度下降更新来计算的。 例如，参数$P_r$可以通过单个梯度步骤以学习速率𝑙进行更新，如下所示： </p>
 <script type="math/tex; mode=display">
 \mathbf{P}_{r}^{\prime}=\mathbf{P}_{r}^{*}-l_{p} \frac{\mathrm{d} L\left(S_{r}\right)}{\mathrm{d} \mathbf{P}_{r}}</script><p>当我们在当前任务上获得更新的关系表示和超平面参数时，会将它们传输到查询集(Query Set)中的实例。 </p>
 <p><img src="./img/17.5.png" srcset="/img/loading.gif" lazyload style="width:50%"></p>

@@ -239,7 +239,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：1 年前
+                  本文最后更新于：1 小时前
                 
               </p>
             
@@ -256,8 +256,8 @@
 <h2 id="TKGC任务设定"><a href="#TKGC任务设定" class="headerlink" title="TKGC任务设定"></a>TKGC任务设定</h2><p>在本文，作者分析对比了标准的TKGC任务和引入的增量TKGC任务的区别。主要体现在：</p>
 <ol>
 <li>输入的范围：在标准的TKGC任务的训练中，训练和评估都在时间步1到T中每步进行一次，在增量的TKGC任务中，每个时间步仅使用新增的数据进行训练和评估。</li>
-<li>用于评估模型的数据的时间步范围：在标准的TKGC任务的训练中，模型将$\{D^1,…,D^T\}$作为输入，并回答$\{D^1_{test},…,D^T_{test}\}$中的查询；增量的TKGC任务的训练中，模型将$\{D^1,…,D^t\}$作为输入，并回答$\{D^1_{test},…,D^t_{test}\}$中的查询。</li>
-<li>得分函数产生最终排名的候选实体集：标准TKGC是所有实体集（$E=\bigcup_{i=1}^{T} E^{i} $）；增量TKGC是已知的实体集（$E_{k n o w n}^{t}=\bigcup_{i=1}^t E^{i}$）</li>
+<li>用于评估模型的数据的时间步范围：在标准的TKGC任务的训练中，模型将${D^1,…,D^T}$作为输入，并回答${D^1<em>{test},…,D^T</em>{test}}$中的查询；增量的TKGC任务的训练中，模型将${D^1,…,D^t}$作为输入，并回答${D^1<em>{test},…,D^t</em>{test}}$中的查询。</li>
+<li>得分函数产生最终排名的候选实体集：标准TKGC是所有实体集（$E=\bigcup<em>{i=1}^{T} E^{i} $）；增量TKGC是已知的实体集（$E</em>{k n o w n}^{t}=\bigcup_{i=1}^t E^{i}$）</li>
 </ol>
 <h2 id="度量方式"><a href="#度量方式" class="headerlink" title="度量方式"></a>度量方式</h2><h3 id="标准TKGC的度量方式"><a href="#标准TKGC的度量方式" class="headerlink" title="标准TKGC的度量方式"></a>标准TKGC的度量方式</h3><p>一般使用Hit@k和Mean Reciprocal Rank (MRR)的方式来对标准TKGC的效果进行评估。其中Hit@10的公式定义如下：</p>
 <script type="math/tex; mode=display">
@@ -295,7 +295,7 @@ h_{s, *, o}^{t}=&\left|\left\{\left(s, r^{\prime}, o, t^{\prime}\right) \mid \ex
 c_{s, *, o}^{t} &=\left|\left\{\left(s, r^{\prime}, o, t\right) \mid \exists r^{\prime},\left(s, r^{\prime}, o, t\right) \in D^{t}\right\}\right|
 \end{aligned}</script><p>B中每个四元组的采样概率设计两个概念：频率相关概率$fp(s,r,o)$和时间相关概率$tp(t’)$，本文定义如下：</p>
 <script type="math/tex; mode=display">
-f p(s, r, o)=\sum_{p \in P} \lambda_{p}\left[\log \left(h_{p}^{t}+1\right)+\gamma \tau \log \left(c_{p}^{t}+1\right)\right]</script><p>标量值𝜆表示与模式𝑝的频率相关的权重。𝜏是窗口的长度。另外引入𝛾作为控制$h^t_{p}$和$c^t_{p}$比重的参数。采用对数形式的频率计算公式主要是用来缩小具有特别大频率的模式的比例，以避免在同一种模式下重复采样过多的四元组。</p>
+f p(s, r, o)=\sum_{p \in P} \lambda_{p}\left[\log \left(h_{p}^{t}+1\right)+\gamma \tau \log \left(c_{p}^{t}+1\right)\right]</script><p>标量值𝜆表示与模式𝑝的频率相关的权重。𝜏是窗口的长度。另外引入𝛾作为控制$h^t<em>{p}$和$c^t</em>{p}$比重的参数。采用对数形式的频率计算公式主要是用来缩小具有特别大频率的模式的比例，以避免在同一种模式下重复采样过多的四元组。</p>
 <p>$tp(t’)$代表距离当前时间步长t不同时间的指数衰减函数，用</p>
 <script type="math/tex; mode=display">
 t p\left(t^{\prime}\right)=\exp \left(\frac{t’-t}{\sigma}\right),</script><p>来表示，其中$\sigma$是控制函数平滑度的标量。最后更具这两个概率结合得到的非归一化采样率$s(s,r,o,t’)$就等于$fp(s,r,o)tp(t’)$。</p>
@@ -315,7 +315,7 @@ q_{s, r, o, t^{\prime}}^{t}=\frac{\exp \left(\phi^{t}\left(s, r, o, t^{\prime}\r
 L_{R K D} &=\sum_{s, r, o, t^{\prime} \in P t} D_{K L}\left(q_{s, r, o, t^{\prime}}^{t-1} \| q_{s, r, o, t^{\prime}}^{t}\right) \\
 &=\sum_{s, r, o, t^{\prime} \in P^{t}} q_{s, r, o, t^{\prime}}^{t-1} \log \left(\frac{q_{s, r, o, t^{\prime}}^{t-1}}{q_{s, r, o, t^{\prime}}^{t}}\right) \\
 L_{R C E} &=-\sum_{s, r, o, t^{\prime} \in P t} \log \left(q_{s, r, o, t^{\prime}}^{t}\right)
-\end{aligned}</script><h3 id="Temporal-Regularization-时间正则化"><a href="#Temporal-Regularization-时间正则化" class="headerlink" title="Temporal Regularization 时间正则化"></a>Temporal Regularization 时间正则化</h3><p>$\theta^{t-1}$表示在时间t-1之后训练的模型参数，$\theta^{t-1}=\{E^{t-1},R^{t-1},W^{t-1},B^{t-1}\}$,其中𝑾和𝑩是编码过程中的权重和偏差参数的矩阵。举例，使用Diachronic Embedding (DE)作为本文的Encoder时，定义如下：</p>
+\end{aligned}</script><h3 id="Temporal-Regularization-时间正则化"><a href="#Temporal-Regularization-时间正则化" class="headerlink" title="Temporal Regularization 时间正则化"></a>Temporal Regularization 时间正则化</h3><p>$\theta^{t-1}$表示在时间t-1之后训练的模型参数，$\theta^{t-1}={E^{t-1},R^{t-1},W^{t-1},B^{t-1}}$,其中𝑾和𝑩是编码过程中的权重和偏差参数的矩阵。举例，使用Diachronic Embedding (DE)作为本文的Encoder时，定义如下：</p>
 <script type="math/tex; mode=display">
 z_{i}^{t}[n]=\left\{\begin{array}{ll}
 z_{i}[n] \sigma\left(w_{i}[n] t+b_{i}[n]\right) & \text { if } 1 \leq n \leq \gamma d \\
@@ -364,7 +364,7 @@ L=\alpha_{1} L_{C E}+\alpha_{2} L_{d e l}+\alpha_{3} L_{R C E}+\alpha_{4} L_{R K
 <li>Temporal Regularization (TR)：在FT的基础上加上了时间正则化损失进行训练。</li>
 <li>The proposed complete model (TIE)：完整的TIE框架。</li>
 <li>Full-batch (FB): 在这个实验中，使用$B^t$和$D^t$中的所有四元组进行微调模型。</li>
-<li>Full-batch with future data (FB_future):这个实验中，使用$\{D^1,…,D^T\}$的所有数据，即standard TKGC</li>
+<li>Full-batch with future data (FB_future):这个实验中，使用${D^1,…,D^T}$的所有数据，即standard TKGC</li>
 </ol>
 
             </div>

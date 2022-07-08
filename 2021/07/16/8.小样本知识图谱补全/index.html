@@ -187,7 +187,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      558 字
+      557 字
     </span>
   
 
@@ -239,7 +239,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：1 年前
+                  本文最后更新于：1 小时前
                 
               </p>
             
@@ -255,7 +255,7 @@
 <p>通过引入注意力机制的模型，考虑实体邻居节点的不同影响力来编码实体h的表示：</p>
 <p><img src="./img/4.3.png" srcset="/img/loading.gif" lazyload></p>
 <h3 id="Aggregating-Few-Shot-Reference-Set"><a href="#Aggregating-Few-Shot-Reference-Set" class="headerlink" title="Aggregating Few-Shot Reference Set"></a>Aggregating Few-Shot Reference Set</h3><p><img src="./img/4.14.png" srcset="/img/loading.gif" lazyload></p>
-<p>当前模型（例如GMatching）无法在参考集中模拟小样本实例的交互，这限制了模型的功能。 因此，我们需要设计一个模块，以有效地为每个关系r制定参考集$R_r$的聚合嵌入。 通过将邻居编码器应用于每个实体对$（h_k，t_k）∈R_r$，我们可以获得$（h_k，t_k）$的表示为$\mathcal{E}_{h_k,t_k} = [f_θ（h_k）⊕f_θ（t_k）]$。 学习具有很少拍摄的实体对的参考集$R_r$的表示形式具有挑战性，因为它需要对不同实体对之间的交互进行建模并积累其表达能力。 我们解决了这一难题并制定了$R_r$中所有实体对的聚合表示：</p>
+<p>当前模型（例如GMatching）无法在参考集中模拟小样本实例的交互，这限制了模型的功能。 因此，我们需要设计一个模块，以有效地为每个关系r制定参考集$R<em>r$的聚合嵌入。 通过将邻居编码器应用于每个实体对$（h_k，t_k）∈R_r$，我们可以获得$（h_k，t_k）$的表示为$\mathcal{E}</em>{h<em>k,t_k} = [f</em>θ（h<em>k）⊕f</em>θ（t_k）]$。 学习具有很少拍摄的实体对的参考集$R_r$的表示形式具有挑战性，因为它需要对不同实体对之间的交互进行建模并积累其表达能力。 我们解决了这一难题并制定了$R_r$中所有实体对的聚合表示：</p>
 <p><img src="./img/4.4.png" srcset="/img/loading.gif" lazyload></p>
 <p>$\mathcal{AG}$可以是池化操作，或者是前馈神经网络等，本文设计了一个具有良好性能的循环自动编码器：</p>
 <p><img src="./img/4.5.png" srcset="/img/loading.gif" lazyload></p>
@@ -274,7 +274,7 @@
 <p><img src="./img/4.9.png" srcset="/img/loading.gif" lazyload></p>
 <p><img src="./img/4.11.png" srcset="/img/loading.gif" lazyload></p>
 <p><img src="./img/4.12.png" srcset="/img/loading.gif" lazyload></p>
-<p>在此处，$\mathcal L_{re}$将被合并到关系排名损失$\mathcal L_{rank}$中，以完善每个实体对的表示。其中γ是$L_{rank}$和$L_{re}$之间的权衡因子(trade-off factor)。 为了最小化L关节并优化模型参数，我们将每个关系作为一项任务，并设计了一个基于批采样的元训练程序。<img src="./img/4.10.png" srcset="/img/loading.gif" lazyload></p>
+<p>在此处，$\mathcal L<em>{re}$将被合并到关系排名损失$\mathcal L</em>{rank}$中，以完善每个实体对的表示。其中γ是$L<em>{rank}$和$L</em>{re}$之间的权衡因子(trade-off factor)。 为了最小化L关节并优化模型参数，我们将每个关系作为一项任务，并设计了一个基于批采样的元训练程序。<img src="./img/4.10.png" srcset="/img/loading.gif" lazyload></p>
 <h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p><img src="./img/4.16.png" srcset="/img/loading.gif" lazyload></p>
 <p><img src="./img/4.17.png" srcset="/img/loading.gif" lazyload></p>
 

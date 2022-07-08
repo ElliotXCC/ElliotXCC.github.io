@@ -239,7 +239,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：1 年前
+                  本文最后更新于：1 小时前
                 
               </p>
             
@@ -267,28 +267,28 @@
 </li>
 </ol>
 <h2 id="任务制定"><a href="#任务制定" class="headerlink" title="任务制定"></a>任务制定</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><ol>
-<li><p>知识图谱 $\mathcal{G}= \{ \mathcal{E,R,TP} \}$，$\mathcal{E}$是实体集合，$\mathcal{R}$是关系集合，$\mathcal{TP=\{(h,r,t)\in E \times R \times E\}}$是三元组集合。</p>
+<li><p>知识图谱 $\mathcal{G}= { \mathcal{E,R,TP} }$，$\mathcal{E}$是实体集合，$\mathcal{R}$是关系集合，$\mathcal{TP={(h,r,t)\in E \times R \times E}}$是三元组集合。</p>
 </li>
-<li><p>小样本链路预测任务$\mathcal{T}$ 在一个知识图谱$\mathcal{G}$中，给定一个支持集$\mathcal{S_r=\{(h_i,t_i)\in E\times E \vert } $ $ \mathcal{(h_i,r,t_i)\in TP\}}$ ，其中关系$\mathcal{r \in R}$，如果$\mathcal{|S_r|=K}$，那么预测和某个头节点$h_j$有着关系$r$的尾节点的任务就叫做K-样本连接预测预测，写作$r:(h_j,?)$。</p>
-<p>通过上面的定义，一个小样本的链接预测任务通常定义在一个具体的关系上。在预测的过程中，通常有超过一个的三元组需要被预测。与支持集$\mathcal{S_r}$相对应的是，我们定义一系列的需要被预测三元组，称之为查询集$Q_r = \{ r : ( h_j , ? )\}$。</p>
+<li><p>小样本链路预测任务$\mathcal{T}$ 在一个知识图谱$\mathcal{G}$中，给定一个支持集$\mathcal{S_r={(h_i,t_i)\in E\times E \vert } $ $ \mathcal{(h_i,r,t_i)\in TP}}$ ，其中关系$\mathcal{r \in R}$，如果$\mathcal{|S_r|=K}$，那么预测和某个头节点$h_j$有着关系$r$的尾节点的任务就叫做K-样本连接预测预测，写作$r:(h_j,?)$。</p>
+<p>通过上面的定义，一个小样本的链接预测任务通常定义在一个具体的关系上。在预测的过程中，通常有超过一个的三元组需要被预测。与支持集$\mathcal{S_r}$相对应的是，我们定义一系列的需要被预测三元组，称之为查询集$Q_r = { r : ( h_j , ? )}$。</p>
 </li>
 </ol>
 <h2 id="MetaR结构"><a href="#MetaR结构" class="headerlink" title="MetaR结构"></a>MetaR结构</h2><p><img src="./img/1.2.png" srcset="/img/loading.gif" lazyload></p>
 <h3 id="Relation-Meta-Learner"><a href="#Relation-Meta-Learner" class="headerlink" title="Relation-Meta Learner"></a>Relation-Meta Learner</h3><p>作用主要是从提供的Support Set中提取关系元，这个学习机的结构是用一个简单的神经网络。</p>
 <p><img src="./img/1.3.png" srcset="/img/loading.gif" lazyload></p>
-<p>在任务$\mathcal{T_r}$中，学习机的输入是给定的Support Set里面的头尾实体对$\{(h_i,t_i)\in S_r\}$，我们首次通过一个$L$层的神经网络提取出这些实体对的具体的关系元(specific relation meta)</p>
+<p>在任务$\mathcal{T_r}$中，学习机的输入是给定的Support Set里面的头尾实体对${(h_i,t_i)\in S_r}$，我们首次通过一个$L$层的神经网络提取出这些实体对的具体的关系元(specific relation meta)</p>
 <script type="math/tex; mode=display">
 \begin{aligned} \mathrm{x}^0&=\mathrm{h}_i⊕\mathrm{t}_i\\
 \mathrm{x}^l&=\sigma(\mathrm{W}^l\mathrm{x}^{l-1}+b^l)\\
-R_{(h_i,t_i)}&=\mathrm{W}^L\mathrm{x}^{L-1}+b^L \end{aligned}</script><p>$\large \mathrm{h}_i\in \mathbb{R}^d,\mathrm{t}_i\in \mathbb{R}^d$，是头实体$h_i$和尾实体$t_i$分别在d维空间的嵌入.$\mathrm{W}^l$和$b^l$分别是神经网络$l$层的权重和偏移。$\sigma $函数使用了LeakyReLU激活函数，$\mathrm{x⊕y}$代表向量拼接，最后的到的$R_{(h_i,t_i)}$代表了特定实体$h_i$和$t_i$的关系元。</p>
+R_{(h_i,t_i)}&=\mathrm{W}^L\mathrm{x}^{L-1}+b^L \end{aligned}</script><p>$\large \mathrm{h}<em>i\in \mathbb{R}^d,\mathrm{t}_i\in \mathbb{R}^d$，是头实体$h_i$和尾实体$t_i$分别在d维空间的嵌入.$\mathrm{W}^l$和$b^l$分别是神经网络$l$层的权重和偏移。$\sigma $函数使用了LeakyReLU激活函数，$\mathrm{x⊕y}$代表向量拼接，最后的到的$R</em>{(h_i,t_i)}$代表了特定实体$h_i$和$t_i$的关系元。</p>
 <script type="math/tex; mode=display">
-R_{\mathcal{T_r}}= \frac{\sum_{i=1}^{K}R_{(h_i,t_i)}}{K}</script><p>有了很多实体对的特定关系元后，我们最后计算当前任务$\mathcal{T_r}$的最终关系元$R_{\mathcal{T_r}}$。</p>
+R_{\mathcal{T_r}}= \frac{\sum_{i=1}^{K}R_{(h_i,t_i)}}{K}</script><p>有了很多实体对的特定关系元后，我们最后计算当前任务$\mathcal{T<em>r}$的最终关系元$R</em>{\mathcal{T_r}}$。</p>
 <h3 id="Embedding-Learner"><a href="#Embedding-Learner" class="headerlink" title="Embedding Learner"></a>Embedding Learner</h3><script type="math/tex; mode=display">
-s_{(h_i,t_i)}=||\mathrm{h}_i+R_{\mathcal{T_r}}-\mathrm{t}_i||</script><p>$||\mathrm{x}||$代表向量的L2范式，这种评分函数的基本思想来源于TransE模型，其假设的是一个真实的三元组满足$\mathrm{h+r=t}$的基本假设。因此这个评分函数定义的是$\mathrm{h+r}$和$\LARGE \mathrm{t}$之间的距离。这个方式转换到我们的链接预测中，由于我们的任务中没有直接普遍的关系嵌入编码，我们使用关系元信息$R_{\mathcal{T_r}}$来替代编码获得的关系$\mathrm{r}$，$R_{\mathcal{T_r}}$可以视为任务$\mathcal{T_r}$的关系编码。</p>
+s_{(h_i,t_i)}=||\mathrm{h}_i+R_{\mathcal{T_r}}-\mathrm{t}_i||</script><p>$||\mathrm{x}||$代表向量的L2范式，这种评分函数的基本思想来源于TransE模型，其假设的是一个真实的三元组满足$\mathrm{h+r=t}$的基本假设。因此这个评分函数定义的是$\mathrm{h+r}$和$\LARGE \mathrm{t}$之间的距离。这个方式转换到我们的链接预测中，由于我们的任务中没有直接普遍的关系嵌入编码，我们使用关系元信息$R<em>{\mathcal{T_r}}$来替代编码获得的关系$\mathrm{r}$，$R</em>{\mathcal{T_r}}$可以视为任务$\mathcal{T_r}$的关系编码。</p>
 <p>本文对每个三元组都进行了评分，并且设置了以下的合页损失函数：</p>
 <script type="math/tex; mode=display">
-L(S_r)=\sum_{(h_i,t_i)\in S_r}[\gamma+s_{(h_i,t_i)}-s_{(h_i,t'_i)}]_+</script><p>其中$[x]_+$表示的是样本x的positive part，$\gamma$是表示距离的超参数。$s_{(h_i,t’_i)}$是相对于正例实体对$(h_i,t_i)\in \mathcal{S_r}$的反例实体对$(h_i,t’_i)$，即$(h_i,r,t’_i)\notin \mathcal{G}$</p>
-<p>我们将基于$L(\mathcal{S_r})$的关系元$R_{\mathcal{T_r}}$的梯度作为梯度元$G_{\mathcal{T_r}}$:</p>
+L(S_r)=\sum_{(h_i,t_i)\in S_r}[\gamma+s_{(h_i,t_i)}-s_{(h_i,t'_i)}]_+</script><p>其中$[x]<em>+$表示的是样本x的positive part，$\gamma$是表示距离的超参数。$s</em>{(h_i,t’_i)}$是相对于正例实体对$(h_i,t_i)\in \mathcal{S_r}$的反例实体对$(h_i,t’_i)$，即$(h_i,r,t’_i)\notin \mathcal{G}$</p>
+<p>我们将基于$L(\mathcal{S<em>r})$的关系元$R</em>{\mathcal{T<em>r}}$的梯度作为梯度元$G</em>{\mathcal{T_r}}$:</p>
 <script type="math/tex; mode=display">
 G_{\mathcal{T_r}}=\nabla_{R_{\mathcal{T_r}}}L(S_r)</script><p>并且通过以下函数更新关系元:</p>
 <script type="math/tex; mode=display">

@@ -197,7 +197,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      37
+      36
        分钟
     </span>
   
@@ -239,7 +239,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：1 年前
+                  本文最后更新于：1 小时前
                 
               </p>
             
@@ -255,16 +255,16 @@
 <li>提出了一种应用于关系预测的one-shot learning框架GMatching，模型只依赖于实体embedding和图谱结构，学习匹配度量函数，利用预测三元组与参考三元组的相似度对新增关系进行预测，相比其他基于embedding的模型取得了更好地效果；</li>
 <li>针对one-shot知识图谱补全任务，提出了2个不同量级的数据集。</li>
 </ol>
-<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><h3 id="One-shot-Learning-Settings"><a href="#One-shot-Learning-Settings" class="headerlink" title="One-shot Learning Settings"></a>One-shot Learning Settings</h3><p>根据标准one-shot学习的设置，文章假设获取了training tasks。每个training tasks 都对应一个KG relation $r ∈ \mathcal{R}$, 并拥有training/testing triples: $\left\{D_{r}^{t r a i n}, D_{r}^{t e s t}\right\}$。这一tasks set就是 <strong><em>the meta-training set</em></strong>, $\large \mathbb{T}_{\text {meta}-\text {train}}$</p>
-<p>根据one-shot的任务设定，在每个<script type="math/tex">D_{r}^{t r a i n}</script>中，采用一个三元组$\left(h_{0}, r,t_{0}\right)$。$D_{r}^{\text {test}}=\left\{\left(h_{i}, r, t_{i}, \mathcal{C}_{h_{i}, r}\right)\right\}$, 其中候选尾节点$\mathcal{C_{h_i,r}}=\{t_{ij}\}$是在知识图谱$\mathcal{G}$中的实体集。给定test query$\left(h_{i}, r\right)$和 $D_{r}^{t r a i n}$中the labeled triple，可对the candidate set $\mathcal{C}_{h_{i}, r}$进行排列用来测试模型(metric model)。</p>
+<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><h3 id="One-shot-Learning-Settings"><a href="#One-shot-Learning-Settings" class="headerlink" title="One-shot Learning Settings"></a>One-shot Learning Settings</h3><p>根据标准one-shot学习的设置，文章假设获取了training tasks。每个training tasks 都对应一个KG relation $r ∈ \mathcal{R}$, 并拥有training/testing triples: $\left{D<em>{r}^{t r a i n}, D</em>{r}^{t e s t}\right}$。这一tasks set就是 <strong><em>the meta-training set</em></strong>, $\large \mathbb{T}_{\text {meta}-\text {train}}$</p>
+<p>根据one-shot的任务设定，在每个<script type="math/tex">D_{r}^{t r a i n}</script>中，采用一个三元组$\left(h<em>{0}, r,t</em>{0}\right)$。$D<em>{r}^{\text {test}}=\left{\left(h</em>{i}, r, t<em>{i}, \mathcal{C}</em>{h<em>{i}, r}\right)\right}$, 其中候选尾节点$\mathcal{C</em>{h<em>i,r}}={t</em>{ij}}$是在知识图谱$\mathcal{G}$中的实体集。给定test query$\left(h<em>{i}, r\right)$和 $D</em>{r}^{t r a i n}$中the labeled triple，可对the candidate set $\mathcal{C}<em>{h</em>{i}, r}$进行排列用来测试模型(metric model)。</p>
 <p>The meta-training 的目标:</p>
 <script type="math/tex; mode=display">
-\LARGE\min _{\theta} \mathbb{E}_{T_{r}}\left[\sum_{\left(h_{i}, r, t_{i}, \mathcal{C}_{h_{i}, r}\right) \in D_{r}^{t e s t}} \frac{\ell_{\theta}\left(h_{i}, r, t_{i} | \mathcal{C}_{h_{i}, r}, D_{r}^{t r a i n}\right)}{\left|D_{r}^{t e s t}\right|}\right]</script><p>$T_r$是meta-training set $\mathbb{T}_{\text { meta -train }}$, $\left|D_{r}^{t e s t}\right|$表示$D_{r}^{t e s t}$中的元组的个数。</p>
-<p>$\ell_{\theta}(h_i,r,t_i|\mathcal{C}_{h_{i}, r})$表示 an arbitrary ranking-loss function, $\theta$表示模型的参数。</p>
-<p>Loss function 表明在只从$D_{r}^{t r a i n}$中采样one-shot数据的条件下，衡量模型在$\left(h_{i}, r, t_{i}, \mathcal{C}_{h_{i}, r}\right)$上的性能。</p>
-<p>训练完成后，就可以利用模型来预测新的关系$r^{\prime} \in \mathcal{R}^{\prime}$，这也就是 <strong><em>meta-testing</em></strong>。这些meta-testing relation 是meta-training中未出现的，即$\mathcal{R}^{\prime} \cap \mathcal{R}=\phi$,每一个meta-testing relation $r^{\prime}$ 也有one-shot training data $D_{r^{\prime}}^{t r a i n}$ 和testing data $D_{r^{\prime}}^{t e s t}$，其定义方式与meta-training一样。这些meta-testing relation形成了meta-test set  $\mathbb{T}_{\text {meta}-\text {test}}$。</p>
-<p>文章还从 $\mathbb{T}_{\text { meta -train }}$中留出一小部分关系子集作为<script type="math/tex">\mathbb{T}_{\text { meta- validation }}</script>。构造验证集是为了不违反one-shot的假设。</p>
-<p>最终，该方法获取了一个 <strong>background knowledge graph</strong> $\mathcal{G}^{\prime}$, 它是$\mathcal{G}$的一个子集，包含了除$\mathbb{T}_{\text { meta -train }}$、$\mathbb{T}_{\text { meta- validation }}$和$\mathbb{T}_{\text {meta}-\text {test}}$以外的所有关系。</p>
+\LARGE\min _{\theta} \mathbb{E}_{T_{r}}\left[\sum_{\left(h_{i}, r, t_{i}, \mathcal{C}_{h_{i}, r}\right) \in D_{r}^{t e s t}} \frac{\ell_{\theta}\left(h_{i}, r, t_{i} | \mathcal{C}_{h_{i}, r}, D_{r}^{t r a i n}\right)}{\left|D_{r}^{t e s t}\right|}\right]</script><p>$T<em>r$是meta-training set $\mathbb{T}</em>{\text { meta -train }}$, $\left|D<em>{r}^{t e s t}\right|$表示$D</em>{r}^{t e s t}$中的元组的个数。</p>
+<p>$\ell<em>{\theta}(h_i,r,t_i|\mathcal{C}</em>{h_{i}, r})$表示 an arbitrary ranking-loss function, $\theta$表示模型的参数。</p>
+<p>Loss function 表明在只从$D<em>{r}^{t r a i n}$中采样one-shot数据的条件下，衡量模型在$\left(h</em>{i}, r, t<em>{i}, \mathcal{C}</em>{h_{i}, r}\right)$上的性能。</p>
+<p>训练完成后，就可以利用模型来预测新的关系$r^{\prime} \in \mathcal{R}^{\prime}$，这也就是 <strong><em>meta-testing</em></strong>。这些meta-testing relation 是meta-training中未出现的，即$\mathcal{R}^{\prime} \cap \mathcal{R}=\phi$,每一个meta-testing relation $r^{\prime}$ 也有one-shot training data $D<em>{r^{\prime}}^{t r a i n}$ 和testing data $D</em>{r^{\prime}}^{t e s t}$，其定义方式与meta-training一样。这些meta-testing relation形成了meta-test set  $\mathbb{T}_{\text {meta}-\text {test}}$。</p>
+<p>文章还从 $\mathbb{T}<em>{\text { meta -train }}$中留出一小部分关系子集作为$$\mathbb{T}</em>{\text { meta- validation }}$$。构造验证集是为了不违反one-shot的假设。</p>
+<p>最终，该方法获取了一个 <strong>background knowledge graph</strong> $\mathcal{G}^{\prime}$, 它是$\mathcal{G}$的一个子集，包含了除$\mathbb{T}<em>{\text { meta -train }}$、$\mathbb{T}</em>{\text { meta- validation }}$和$\mathbb{T}_{\text {meta}-\text {test}}$以外的所有关系。</p>
 <p>本文主要是针对已知head entity和relation, 对tail entity进行补全的链路预测任务。</p>
 <h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p><img src="./img/2.2.png" srcset="/img/loading.gif" lazyload></p>
 <h3 id="Neighbor-Encoder"><a href="#Neighbor-Encoder" class="headerlink" title="Neighbor Encoder"></a>Neighbor Encoder</h3><p>Neighbor Encoder的目标是学习三元组的实体向量表示。旨在增强每个实体在知识图谱中局部连接的表示。对于一个目标三元组中的实体Leonardo da Vinci，它的one-hop neighbors如2(a) 所示，每个neighbor都是以元组的形式出现, 以第k个neighbor为例$（r_k, e_k）$，由于他们出现在background KG中，所以已知他们的KG embedding为：</p>
@@ -290,10 +290,10 @@ h_k+1&=h'{k+1}+q\\
 score_{k+1}&=\frac{h_{k+1}\odot s}{\|h_{k+1}\|\|s\|}
 
 \end{align}</script><p><img src="./img/2.3.png" srcset="/img/loading.gif" lazyload></p>
-<p>其中，$L S T M ( x , [ h , c ] )$ 是一个具有输入为 $\mathcal{x}$、隐态 $\mathcal{h}$ 和单元态$\mathcal{c}$的标准LSTM。$s=f\left(\mathcal{N}_{h_{0}}\right) \oplus f\left(\mathcal{N}_{t_{0}}\right), q=f\left(\mathcal{N}_{h_{i}}\right) \oplus f\left(\mathcal{N}_{t_{i j}}\right)$分别是reference pair和 query pair的连接邻向量。K是一个待调的超参数，在K个step之后，采用score_k作为query enetity pair 与 support entity pair间最终相似度评分。</p>
-<h3 id="Loss-Function-and-Training"><a href="#Loss-Function-and-Training" class="headerlink" title="Loss Function and Training"></a>Loss Function and Training</h3><p>对于一个query relation <strong><em>r</em></strong> 及其reference/training triple $\left(h_{0}, r, t_{0}\right)$, 本文收集了positive(true)query triplet $\left\{\left(h_{i}, r, t_{i}^{+}\right) |\left(h_{i}, r, t_{i}^{+}\right) \in \mathcal{G}\right\}$并通过填充尾部实体的方式构建了negative（false) query triplet { $\left\{\left(h_{i}, r, t_{i}^{-}\right) |\left(h_{i}, r, t_{i}^{-}\right) \notin \mathcal{G}\right\}$。于是模型可通过下式进行优化。</p>
+<p>其中，$L S T M ( x , [ h , c ] )$ 是一个具有输入为 $\mathcal{x}$、隐态 $\mathcal{h}$ 和单元态$\mathcal{c}$的标准LSTM。$s=f\left(\mathcal{N}<em>{h</em>{0}}\right) \oplus f\left(\mathcal{N}<em>{t</em>{0}}\right), q=f\left(\mathcal{N}<em>{h</em>{i}}\right) \oplus f\left(\mathcal{N}<em>{t</em>{i j}}\right)$分别是reference pair和 query pair的连接邻向量。K是一个待调的超参数，在K个step之后，采用score_k作为query enetity pair 与 support entity pair间最终相似度评分。</p>
+<h3 id="Loss-Function-and-Training"><a href="#Loss-Function-and-Training" class="headerlink" title="Loss Function and Training"></a>Loss Function and Training</h3><p>对于一个query relation <strong><em>r</em></strong> 及其reference/training triple $\left(h<em>{0}, r, t</em>{0}\right)$, 本文收集了positive(true)query triplet $\left{\left(h<em>{i}, r, t</em>{i}^{+}\right) |\left(h<em>{i}, r, t</em>{i}^{+}\right) \in \mathcal{G}\right}$并通过填充尾部实体的方式构建了negative（false) query triplet { $\left{\left(h<em>{i}, r, t</em>{i}^{-}\right) |\left(h<em>{i}, r, t</em>{i}^{-}\right) \notin \mathcal{G}\right}$。于是模型可通过下式进行优化。</p>
 <script type="math/tex; mode=display">
-\LARGE\ell_{\theta}=\max \left(0, \gamma+\operatorname{score}_{\theta}^{-}-\operatorname{score} _{\theta}^{+}\right)</script><p>其中，$\operatorname{score} _{\theta}^{+}$和 $\operatorname{score}_{\theta}^{-}$ 是利用metric model 比较the query triple$\left(h_{i}, r, t_{i}^{+} / t_{i}^{-}\right)$与 the reference triple$\left(h_{0}, r, t_{0}\right)$得到的标量。$\gamma$是一个待调的超参数。</p>
+\LARGE\ell_{\theta}=\max \left(0, \gamma+\operatorname{score}_{\theta}^{-}-\operatorname{score} _{\theta}^{+}\right)</script><p>其中，$\operatorname{score} <em>{\theta}^{+}$和 $\operatorname{score}</em>{\theta}^{-}$ 是利用metric model 比较the query triple$\left(h<em>{i}, r, t</em>{i}^{+} / t<em>{i}^{-}\right)$与 the reference triple$\left(h</em>{0}, r, t_{0}\right)$得到的标量。$\gamma$是一个待调的超参数。</p>
 <p>在每次训练中，我们首先从meta-training set $\mathbb{T}_{meta-training}$中提出一个任务/关系 $T_r$, 然后在$T_r$里所有的已知三元组中，提取一个三元组作为reference/training 三元组$D_r^{train}$，提取另一批其他的三元组作为positive query/test 三元组 $D_r^{test}$. </p>
 <p><img src="./img/2.4.png" srcset="/img/loading.gif" lazyload></p>
 <h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p><img src="./img/2.5.png" srcset="/img/loading.gif" lazyload></p>

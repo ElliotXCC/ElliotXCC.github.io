@@ -239,7 +239,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：1 年前
+                  本文最后更新于：1 小时前
                 
               </p>
             
@@ -284,7 +284,7 @@ w^{\text {relation }}=\frac{1}{n_{t}} \sum_{i=1}^{n_{t}} \hat{y}_{i}</script><p>
 <script type="math/tex; mode=display">
 w_{i}^{\text {instance }}=\frac{1}{\frac{D_{a}\left(F_{s}(x)\right)}{D_{a}\left(F_{t}(x)\right)}+1}=1-D_{a}(f)</script><h4 id="关系门机制-Relation-gate-Mechanism"><a href="#关系门机制-Relation-gate-Mechanism" class="headerlink" title="关系门机制(Relation-gate Mechanism)"></a>关系门机制(Relation-gate Mechanism)</h4><p>关系权重和实例权重都是有用的。但可以明显看出，不同粒度的权重对不同的目标关系有不同的贡献。一方面，对于源关系语义相似度较低的目标关系(如located_in)，加强关系权值有利于减少离群关系的负面影响。另一方面，对于具有许多语义上相似的源关系(如live_in、was_born_in)的目标关系(如educated_in)，很难区分不同源关系的影响，这表明有必要学习细粒度的实例权重。因此，对于标号为$y_j$​​​​的源关系中的实例，该实例的权值为:</p>
 <script type="math/tex; mode=display">
-w_{i}^{\text {total }}=\alpha w_{i}^{\text {instance }}+(1-\alpha) w_{j}^{\text {relation }}</script><p>$w_{j}^{\text {relation }}$是向量$w^{\text {relation }}$第$j$个维度的值。然后使用$w_{i}^{t o t a l}=\frac{n_{s} w_{i}^{t o t a l}}{\sum_{i=1}^{n_{s}} w_{i}^{t o t a l}}$将权重标准化。其中$\alpha$是关系门用来平衡关系权重和实例权重的超参数。</p>
+w_{i}^{\text {total }}=\alpha w_{i}^{\text {instance }}+(1-\alpha) w_{j}^{\text {relation }}</script><p>$w<em>{j}^{\text {relation }}$是向量$w^{\text {relation }}$第$j$个维度的值。然后使用$w</em>{i}^{t o t a l}=\frac{n<em>{s} w</em>{i}^{t o t a l}}{\sum<em>{i=1}^{n</em>{s}} w_{i}^{t o t a l}}$将权重标准化。其中$\alpha$是关系门用来平衡关系权重和实例权重的超参数。</p>
 <script type="math/tex; mode=display">
 \alpha=\sigma\left(W_{r} F_{t}(x)\right)</script><p>其中$\sigma$是激活函数，$W_r$是权重矩阵。</p>
 <h3 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h3><h4 id="目标函数"><a href="#目标函数" class="headerlink" title="目标函数"></a>目标函数</h4><script type="math/tex; mode=display">
@@ -336,9 +336,9 @@ w_{i}^{\text {total }}=\alpha w_{i}^{\text {instance }}+(1-\alpha) w_{j}^{\text 
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/03/17/12.Java%E5%9F%BA%E7%A1%80-%E6%B3%9B%E5%9E%8B%E4%B8%8E%E5%8F%8D%E5%B0%84/">
+                      <a href="/2022/04/29/12.Java%E5%9F%BA%E7%A1%80-%E6%B3%9B%E5%9E%8B%E4%B8%8E%E5%8F%8D%E5%B0%84/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile"></span>
+                        <span class="hidden-mobile">Java基础 - 泛型与反射</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
