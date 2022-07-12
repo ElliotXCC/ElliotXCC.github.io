@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.elliotx.cc/2022/05/01/13.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%88%9D%E4%BD%93%E9%AA%8C%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%20%E5%88%9B%E5%BB%BA%E5%9E%8B/</loc>
+    
+    <lastmod>2022-07-12</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.elliotx.cc/2022/04/29/12.Java%E5%9F%BA%E7%A1%80-%E6%B3%9B%E5%9E%8B%E4%B8%8E%E5%8F%8D%E5%B0%84/</loc>
     
     <lastmod>2022-07-08</lastmod>
@@ -88,7 +95,7 @@
 
   <url>
     <loc>http://www.elliotx.cc/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -96,126 +103,133 @@
   
   <url>
     <loc>http://www.elliotx.cc/tags/Few-Shot-Knowledge-Graph/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/Meta-Learning/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/KGC/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/Link-Prediction/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/JAVA/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/ACM/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/SpringBoot/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/Temporal-Knowledge-Graph/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/Incremental-Learning/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/TransH/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/Out-Of-Graph/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/One-Shot/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/Knowledge-Graph/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/LSTM/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/Relation-Extraction/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/%E5%8F%8D%E5%B0%84/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/tags/%E6%B3%9B%E5%9E%8B/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.elliotx.cc/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%8C%E5%88%9B%E5%BB%BA%E5%9E%8B/</loc>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -224,63 +238,77 @@
   
   <url>
     <loc>http://www.elliotx.cc/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/categories/JAVA/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/categories/Spring/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/%E6%97%B6%E5%BA%8F%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/%E5%B0%8F%E6%A0%B7%E6%9C%AC%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/categories/JAVA/%E7%AC%94%E8%AF%95%E6%8A%80%E5%B7%A7/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/categories/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/categories/Spring/SpringBoot/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.elliotx.cc/categories/JAVA/%E5%9F%BA%E7%A1%80/</loc>
-    <lastmod>2022-07-08</lastmod>
+    <lastmod>2022-07-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.elliotx.cc/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2022-07-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.elliotx.cc/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2022-07-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
